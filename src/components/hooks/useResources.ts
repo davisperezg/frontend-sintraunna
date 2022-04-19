@@ -1,8 +1,10 @@
 import { useContext } from "react";
 import {
-  createResource,
+  createResourceRole,
   getResourceByRol,
   getResources,
+  getResourceByUser,
+  createResourceUser,
 } from "../../api/resource";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { AuthContext } from "../../stateManagement/context";
@@ -15,9 +17,18 @@ interface IError {
   };
 }
 
-interface ICreateParams {
+interface ICreateParamsRole {
   body: {
     role: string;
+    resource: string[];
+  };
+
+  idUpdateData?: string;
+}
+
+interface ICreateParamsUser {
+  body: {
+    user: string;
     resource: string[];
   };
 
@@ -43,14 +54,13 @@ export const useResources = () => {
   return useQuery<any, IError>([KEY], () => getResources());
 };
 
-export const useMutateResource = () => {
+export const useMutateResourceRol = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<any, IError, ICreateParams>(
-    ({ body, idUpdateData }) => createResource(body, idUpdateData),
+  return useMutation<any, IError, ICreateParamsRole>(
+    ({ body, idUpdateData }) => createResourceRole(body, idUpdateData),
     {
       onSuccess: (res: any) => {
-        console.log(res);
         if (!res.role) {
           queryClient.invalidateQueries([KEY]);
         } else {
@@ -62,5 +72,32 @@ export const useMutateResource = () => {
         }
       },
     }
+  );
+};
+
+export const useMutateResourceUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<any, IError, ICreateParamsUser>(
+    ({ body, idUpdateData }) => createResourceUser(body, idUpdateData),
+    {
+      onSuccess: (res: any) => {
+        if (!res.user) {
+          queryClient.invalidateQueries([KEY + "_users"]);
+        } else {
+          const { user } = res;
+          queryClient.setQueryData([KEY + "_users"], (prevRoles: any) =>
+            prevRoles.concat(user)
+          );
+          queryClient.invalidateQueries([KEY + "_users"]);
+        }
+      },
+    }
+  );
+};
+
+export const useResourcesByUser = (id: string) => {
+  return useQuery<any, IError>([KEY + "_users", id], () =>
+    getResourceByUser(id)
   );
 };

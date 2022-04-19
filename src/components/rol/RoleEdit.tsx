@@ -18,7 +18,7 @@ import { Role } from "../../interface/Role";
 import { useModules } from "../hooks/useModules";
 import CheckBoxItem from "../checkbox/CheckBoxItem";
 import {
-  useMutateResource,
+  useMutateResourceRol,
   useResources,
   useResourcesByRol,
 } from "../hooks/useResources";
@@ -81,7 +81,7 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
   const [permisosSelected, setPermisosSelected] = useState<string[]>([]);
   const { mutate, isLoading: isLoadingMutate } = useMutateRole();
   const { mutate: mutateResource, isLoading: isLoadingMutateResource } =
-    useMutateResource();
+    useMutateResourceRol();
   const { data, isLoading } = useRole(roleId);
   const { data: dataAccess, isLoading: isLoadingAccess } =
     useResourcesByRol(roleId);
@@ -118,20 +118,12 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
       {
         body: {
           role: roleId,
-          resource: resources
-            .reduce((prev: any, curr: any) => {
-              const item = permisosSelected.find((x) => x === curr.name);
-              if (item) prev = [...prev, curr];
-
-              return prev;
-            }, [])
-            .map((format: any) => {
-              return format.key;
-            }),
+          resource: permisosSelected,
         },
       },
       {
         onSuccess: () => {
+          console.log(permisosSelected);
           toast.success("Permisos actualizado. !");
           setRole(initialState);
           handleClose();
@@ -152,12 +144,6 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
     setPermisosSelected(value);
   };
 
-  const loadResources = useCallback(() => {
-    const valueResources: any[] =
-      dataAccess?.resource.map((format: any) => format.name) || [];
-    setPermisosSelected(valueResources);
-  }, [dataAccess?.resource]);
-
   const loadRole = useCallback(() => {
     if (data)
       setRole({
@@ -168,12 +154,11 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
       });
 
     setModuleSelected(data?.module as []);
-  }, [data]);
-
+    setPermisosSelected(dataAccess);
+  }, [data, dataAccess]);
   useEffect(() => {
-    loadResources();
     loadRole();
-  }, [loadResources, loadRole]);
+  }, [loadRole]);
 
   return (
     <>
@@ -247,11 +232,7 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
                   ) : (
                     <FormGroup>
                       <CheckBoxItem
-                        options={
-                          isLoadingResources
-                            ? []
-                            : resources.map((res: any) => res.name)
-                        }
+                        options={isLoadingResources ? [] : resources}
                         value={permisosSelected}
                         handleChange={handleCheckPermisos}
                       />

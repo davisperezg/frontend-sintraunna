@@ -128,7 +128,7 @@ const ActionesButton = ({ ...rest }) => {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={() => openEdit(rest.row.nroDocument)} disableRipple>
+        <MenuItem onClick={() => openEdit(rest.row._id)} disableRipple>
           Editar
         </MenuItem>
         <MenuItem

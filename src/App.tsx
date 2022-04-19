@@ -4,7 +4,7 @@ import { AppRouter } from "./routes/AppRoute";
 
 function App() {
   const initialValue = JSON.parse(String(localStorage.getItem("user")));
-
+  console.log("initialValue", initialValue);
   const [user, setUser] = useState<any>(
     initialValue ? initialValue.user : null
   );

@@ -7,8 +7,7 @@ import { Module } from "../../interface/Module";
 const Modules = () => {
   const { user } = useContext(AuthContext);
   const { role } = user;
-  const { module: modules } = role;
-
+  const { modules } = role;
   return (
     <ContentButtons>
       {modules.map((module: Module) => (

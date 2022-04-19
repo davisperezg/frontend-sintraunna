@@ -20,8 +20,11 @@ import { useRoles } from "../hooks/useRoles";
 import { BootstrapDialog, BootstrapDialogTitle } from "../modal";
 import { useMutateUser, useUser, useChangePassword } from "../hooks/useUsers";
 import { toast } from "react-toastify";
-import { getResourceByRol } from "../../api/resource";
-import { useResources } from "../hooks/useResources";
+import {
+  useMutateResourceUser,
+  useResources,
+  useResourcesByUser,
+} from "../hooks/useResources";
 import CheckBoxItem from "../checkbox/CheckBoxItem";
 
 interface Props {
@@ -91,6 +94,10 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
   const [value, setValue] = useState(0);
   const { data: resources, isLoading: isLoadingResources } = useResources();
   const [permisosSelected, setPermisosSelected] = useState<string[]>([]);
+  const { data: resourcesByUsers, isLoading: isLoadingRUsers } =
+    useResourcesByUser(userId);
+  const { mutate: mutateResourceUser, isLoading: isLoadingMutateResourceUser } =
+    useMutateResourceUser();
 
   const handleChangeTab = (event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -136,20 +143,34 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
         );
       }
 
+      //mutate usuario
       mutate(
         {
           dataUser: {
             ...user,
-            resource: resources
-              .reduce((prev: any, curr: any) => {
-                const item = permisosSelected.find((x) => x === curr.name);
-                if (item) prev = [...prev, curr];
+            role: user.roleId as string,
+          },
+          idUpdateData: user._id,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Usuario actualizado. !");
+            setUser(initialState);
+            handleClose();
+          },
+          onError: (e) => {
+            const error: Error = JSON.parse(e.request.response);
+            toast.error(error.message);
+          },
+        }
+      );
 
-                return prev;
-              }, [])
-              .map((format: any) => {
-                return format.key;
-              }),
+      //mutate recursos => permisosSelected
+      mutateResourceUser(
+        {
+          body: {
+            user: userId,
+            resource: permisosSelected,
           },
           idUpdateData: user._id,
         },
@@ -181,8 +202,8 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
         roleId: data?.roleId,
       });
 
-    setPermisosSelected(data?.resource as []);
-  }, [data]);
+    setPermisosSelected(resourcesByUsers);
+  }, [data, resourcesByUsers]);
 
   useEffect(() => {
     loadUser();
@@ -232,7 +253,7 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
                           onChange={(e) => handleChange("role", e.target.value)}
                         >
                           {roles?.map((role) => (
-                            <MenuItem key={role.name} value={role.name}>
+                            <MenuItem key={role._id} value={role.name}>
                               {role.name}
                             </MenuItem>
                           ))}
@@ -329,11 +350,7 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
                 <TabPanel value={value} index={2}>
                   <FormGroup>
                     <CheckBoxItem
-                      options={
-                        isLoadingResources
-                          ? []
-                          : resources.map((res: any) => res.name)
-                      }
+                      options={isLoadingResources ? [] : resources}
                       value={permisosSelected}
                       handleChange={handleCheckPermisos}
                     />

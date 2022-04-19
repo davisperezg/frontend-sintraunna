@@ -9,7 +9,7 @@ import MenuItem from "./MenuItems";
 const Menus = () => {
   const { user } = useContext(AuthContext);
   const { role } = user;
-  const { module: modules } = role;
+  const { modules } = role;
   const { id } = useParams();
   const [menus, setMenus] = useState<[]>([]);
 

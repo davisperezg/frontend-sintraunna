@@ -1,8 +1,13 @@
 import axios from "axios";
 import { BASE_API } from "../consts/api";
 
-interface IData {
+interface IDataRole {
   role: string;
+  resource: string[];
+}
+
+interface IDataUser {
+  user: string;
   resource: string[];
 }
 
@@ -18,8 +23,21 @@ export const getResourceByRol = async (id: string) => {
   return data;
 };
 
-export const createResource = async (body: IData, idData?: string) => {
+export const getResourceByUser = async (id: string) => {
+  const { data } = await axios.get(
+    `${BASE_API}/api/v1/resources-users/user/${id}`
+  );
+  return data;
+};
+
+export const createResourceRole = async (body: IDataRole, idData?: string) => {
   //create
   const { data } = await axios.post(`${BASE_API}/api/v1/resources-roles`, body);
+  return data;
+};
+
+export const createResourceUser = async (body: IDataUser, idData?: string) => {
+  //create
+  const { data } = await axios.post(`${BASE_API}/api/v1/resources-users`, body);
   return data;
 };
