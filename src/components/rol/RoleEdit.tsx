@@ -22,6 +22,8 @@ import {
   useResources,
   useResourcesByRol,
 } from "../hooks/useResources";
+import { SA } from "../../consts/const";
+import { ErrorServer } from "../../interface/Error";
 
 interface Props {
   handleClose: () => void;
@@ -79,8 +81,8 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
   const [role, setRole] = useState<Role>(initialState);
   const [moduleSelected, setModuleSelected] = useState<string[]>([]);
   const [permisosSelected, setPermisosSelected] = useState<string[]>([]);
-  const { mutate, isLoading: isLoadingMutate } = useMutateRole();
-  const { mutate: mutateResource, isLoading: isLoadingMutateResource } =
+  const { mutateAsync, isLoading: isLoadingMutate } = useMutateRole();
+  const { mutateAsync: mutateResource, isLoading: isLoadingMutateResource } =
     useMutateResourceRol();
   const { data, isLoading } = useRole(roleId);
   const { data: dataAccess, isLoading: isLoadingAccess } =
@@ -95,45 +97,25 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
     setRole({ ...role, [prop]: value });
   };
 
-  const handleOk = () => {
-    mutate(
-      {
+  const handleOk = async () => {
+    try {
+      await mutateAsync({
         dataRole: { ...role, module: moduleSelected },
         idUpdateData: role._id,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Rol actualizado. !");
-          setRole(initialState);
-          handleClose();
-        },
-        onError: (e) => {
-          const error: Error = JSON.parse(e.request.response);
-          toast.error(error.message);
-        },
-      }
-    );
-
-    mutateResource(
-      {
+      });
+      await mutateResource({
         body: {
           role: roleId,
           resource: permisosSelected,
         },
-      },
-      {
-        onSuccess: () => {
-          console.log(permisosSelected);
-          toast.success("Permisos actualizado. !");
-          setRole(initialState);
-          handleClose();
-        },
-        onError: (e) => {
-          const error: Error = JSON.parse(e.request.response);
-          toast.error(error.message);
-        },
-      }
-    );
+      });
+      toast.success("Rol actualizado. !");
+      setRole(initialState);
+      handleClose();
+    } catch (e: any) {
+      const error: ErrorServer = JSON.parse(e.request.response);
+      toast.error(error.message);
+    }
   };
 
   const handleCheckModules = (value: string[]) => {
@@ -156,6 +138,7 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
     setModuleSelected(data?.module as []);
     setPermisosSelected(dataAccess);
   }, [data, dataAccess]);
+
   useEffect(() => {
     loadRole();
   }, [loadRole]);
@@ -192,17 +175,20 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
                 </Box>
                 <TabPanel value={value} index={0}>
                   <Grid container spacing={2}>
-                    <Grid item md={12}>
-                      <TextField
-                        fullWidth
-                        required
-                        value={role.name}
-                        onChange={(e) => handleChange("name", e.target.value)}
-                        id="name-required"
-                        label="Nombre"
-                        autoComplete="off"
-                      />
-                    </Grid>
+                    {role.name === SA || (
+                      <Grid item md={12}>
+                        <TextField
+                          fullWidth
+                          required
+                          value={role.name}
+                          onChange={(e) => handleChange("name", e.target.value)}
+                          id="name-required"
+                          label="Nombre"
+                          autoComplete="off"
+                        />
+                      </Grid>
+                    )}
+
                     <Grid item md={12}>
                       <TextField
                         fullWidth

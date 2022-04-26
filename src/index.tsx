@@ -5,6 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import "./styles/index.css";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { jwtInterceptor } from "./utils/helpers/axios/jwt.interceptors";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -15,6 +16,7 @@ ReactDOM.render(
   <QueryClientProvider client={queryClient}>
     <React.StrictMode>
       <App />
+      <ReactQueryDevtools initialIsOpen={false} />
     </React.StrictMode>
   </QueryClientProvider>,
   document.getElementById("root")

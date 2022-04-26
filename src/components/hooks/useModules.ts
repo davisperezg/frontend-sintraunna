@@ -6,6 +6,8 @@ import {
   ppModules,
   restoreModel,
   getModulesList,
+  findServiceByUser,
+  createServiceUser,
 } from "../../api/module";
 import { Module } from "../../interface/Module";
 
@@ -24,6 +26,15 @@ interface IError {
   request: {
     response: string;
   };
+}
+
+interface ICreateParamsService {
+  body: {
+    user: string;
+    module: string[];
+  };
+
+  idUpdateData?: string;
 }
 
 export function useModules() {
@@ -79,6 +90,25 @@ export const useRestoreModule = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries([KEY + "list"]);
+      },
+    }
+  );
+};
+
+export const useModulesByUser = (id: string) => {
+  return useQuery<any, IError>([KEY + "list-user", id], () =>
+    findServiceByUser(id)
+  );
+};
+
+export const useMutateServicesUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<any, IError, ICreateParamsService>(
+    ({ body, idUpdateData }) => createServiceUser(body, idUpdateData),
+    {
+      onSuccess: (res: any) => {
+        queryClient.invalidateQueries([KEY + "list-user"]);
       },
     }
   );

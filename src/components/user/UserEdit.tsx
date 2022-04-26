@@ -26,6 +26,12 @@ import {
   useResourcesByUser,
 } from "../hooks/useResources";
 import CheckBoxItem from "../checkbox/CheckBoxItem";
+import {
+  useModules,
+  useModulesByUser,
+  useMutateServicesUser,
+} from "../hooks/useModules";
+import { ErrorServer } from "../../interface/Error";
 
 interface Props {
   handleClose: () => void;
@@ -87,17 +93,28 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
   const [password, setPassword] = useState({
     password: "",
   });
-  const { mutate, isLoading: isLoadingMutate } = useMutateUser();
-  const { mutate: mutatePassword, isLoading: isLoadingPassword } =
+  const { mutateAsync, isLoading: isLoadingMutate } = useMutateUser();
+  const { mutateAsync: mutatePassword, isLoading: isLoadingPassword } =
     useChangePassword();
   const { data, isLoading } = useUser(userId);
   const [value, setValue] = useState(0);
   const { data: resources, isLoading: isLoadingResources } = useResources();
   const [permisosSelected, setPermisosSelected] = useState<string[]>([]);
+  const [modulesSelected, setModulesSelected] = useState<string[]>([]);
   const { data: resourcesByUsers, isLoading: isLoadingRUsers } =
     useResourcesByUser(userId);
-  const { mutate: mutateResourceUser, isLoading: isLoadingMutateResourceUser } =
-    useMutateResourceUser();
+  const {
+    mutateAsync: mutateResourceUser,
+    isLoading: isLoadingMutateResourceUser,
+  } = useMutateResourceUser();
+
+  const { data: modulesOfUser, isLoading: isLoadingModulesOfUser } =
+    useModulesByUser(userId);
+  const { data: modules, isLoading: isLoadingModules } = useModules();
+  const {
+    mutateAsync: mutateServiceUser,
+    isLoading: isLoadingMutateServiceUser,
+  } = useMutateServicesUser();
 
   const handleChangeTab = (event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -118,74 +135,56 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
     setPermisosSelected(value);
   };
 
-  const handleOk = () => {
+  const handleCheckModules = (value: string[]) => {
+    setModulesSelected(value);
+  };
+
+  const handleOk = async () => {
     //Si completa el campo cambiar password debe tener minimo 6 caracteres
     if (password.password.length !== 0 && password.password.length <= 5) {
       toast.error("El campo contraseña debe tener minimo 6 caracteres.");
     } else {
       if (password.password.length >= 6) {
-        mutatePassword(
-          {
+        try {
+          await mutatePassword({
             id: String(user._id),
             body: password,
-          },
-          {
-            onSuccess: () => {
-              toast.success("Contraseña actualizada. !");
-              setUser(initialState);
-              handleClose();
-            },
-            onError: (e) => {
-              const error: Error = JSON.parse(e.request.response);
-              toast.error(error.message);
-            },
-          }
-        );
+          });
+          toast.success("Contraseña actualizada. !");
+        } catch (e: any) {
+          const error: ErrorServer = JSON.parse(e.request.response);
+          toast.error(error.message);
+        }
       }
 
-      //mutate usuario
-      mutate(
-        {
+      try {
+        //mutate usuario
+        await mutateAsync({
           dataUser: {
             ...user,
             role: user.roleId as string,
           },
           idUpdateData: user._id,
-        },
-        {
-          onSuccess: () => {
-            toast.success("Usuario actualizado. !");
-            setUser(initialState);
-            handleClose();
-          },
-          onError: (e) => {
-            const error: Error = JSON.parse(e.request.response);
-            toast.error(error.message);
-          },
-        }
-      );
-
-      //mutate recursos => permisosSelected
-      mutateResourceUser(
-        {
+        });
+        await mutateResourceUser({
           body: {
             user: userId,
             resource: permisosSelected,
           },
-          idUpdateData: user._id,
-        },
-        {
-          onSuccess: () => {
-            toast.success("Usuario actualizado. !");
-            setUser(initialState);
-            handleClose();
+        });
+        await mutateServiceUser({
+          body: {
+            user: userId,
+            module: modulesSelected,
           },
-          onError: (e) => {
-            const error: Error = JSON.parse(e.request.response);
-            toast.error(error.message);
-          },
-        }
-      );
+        });
+        toast.success("Usuario actualizado. !");
+        setUser(initialState);
+        handleClose();
+      } catch (e: any) {
+        const error: ErrorServer = JSON.parse(e.request.response);
+        toast.error(error.message);
+      }
     }
   };
 
@@ -203,7 +202,9 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
       });
 
     setPermisosSelected(resourcesByUsers);
-  }, [data, resourcesByUsers]);
+    const formatedModules = modulesOfUser?.map((mod: any) => mod._id) || [];
+    setModulesSelected(formatedModules);
+  }, [data, resourcesByUsers, modulesOfUser]);
 
   useEffect(() => {
     loadUser();
@@ -237,6 +238,7 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
                     <Tab label="General" {...a11yProps(0)} />
                     <Tab label="Cambiar contraseña" {...a11yProps(1)} />
                     <Tab label="Permisos" {...a11yProps(2)} />
+                    <Tab label="Servicios" {...a11yProps(3)} />
                   </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
@@ -353,6 +355,15 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
                       options={isLoadingResources ? [] : resources}
                       value={permisosSelected}
                       handleChange={handleCheckPermisos}
+                    />
+                  </FormGroup>
+                </TabPanel>
+                <TabPanel value={value} index={3}>
+                  <FormGroup>
+                    <CheckBoxItem
+                      options={isLoadingModules ? [] : (modules as [])}
+                      value={isLoadingModulesOfUser ? [] : modulesSelected}
+                      handleChange={handleCheckModules}
                     />
                   </FormGroup>
                 </TabPanel>

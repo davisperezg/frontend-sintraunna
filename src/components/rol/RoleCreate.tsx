@@ -69,7 +69,7 @@ const RoleCreate = ({ handleClose, open }: Props) => {
   const { data: modules, isLoading: isLoadingModules } = useModules();
   const [role, setRole] = useState<Role>(initialState);
   const [moduleSelected, setModuleSelected] = useState<string[]>([]);
-  const { mutate, isLoading: isLoadingMutate } = useMutateRole();
+  const { mutateAsync, isLoading: isLoadingMutate } = useMutateRole();
   const [value, setValue] = useState(0);
 
   const handleChangeTab = (event: SyntheticEvent, newValue: number) => {
@@ -80,23 +80,17 @@ const RoleCreate = ({ handleClose, open }: Props) => {
     setRole({ ...role, [prop]: value });
   };
 
-  const handleOk = () => {
-    mutate(
-      {
+  const handleOk = async () => {
+    try {
+      await mutateAsync({
         dataRole: { ...role, module: moduleSelected },
-      },
-      {
-        onSuccess: () => {
-          toast.success("Rol creado. !");
-          setRole(initialState);
-          handleClose();
-        },
-        onError: (e) => {
-          const error: Error = JSON.parse(e.request.response);
-          toast.error(error.message);
-        },
-      }
-    );
+      });
+      toast.success("Rol creado. !");
+      closeModal();
+    } catch (e: any) {
+      const error: Error = JSON.parse(e.request.response);
+      toast.error(error.message);
+    }
   };
 
   const handleCheckModules = (value: string[]) => {

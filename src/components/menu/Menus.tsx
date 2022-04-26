@@ -5,28 +5,34 @@ import { useParams } from "react-router-dom";
 import { Menu } from "../../interface/Menu";
 import { ContentButtons } from "./MenuStyle";
 import MenuItem from "./MenuItems";
+import { useModulesByUser } from "../hooks/useModules";
 
 const Menus = () => {
   const { user } = useContext(AuthContext);
-  const { role } = user;
-  const { modules } = role;
   const { id } = useParams();
   const [menus, setMenus] = useState<[]>([]);
+  const { data: modules, isLoading, isError } = useModulesByUser(user?._id);
 
   const findMenusByIdModulos = (id: string) => {
-    const { menu } = modules.find((module: Module) => module._id === id);
-    setMenus(menu);
+    const allMenus = modules?.find((module: Module) => module._id === id) || [];
+    console.log("sus menus son:", allMenus);
+    setMenus(allMenus.menus);
   };
 
   useEffect(() => {
-    if (id) findMenusByIdModulos(id);
-  }, [id]);
+    if (id) {
+      const allMenus =
+        modules?.find((module: Module) => module._id === id) || [];
+      console.log("sus menus son:", allMenus);
+      setMenus(allMenus?.menus);
+    }
+  }, [id, modules]);
 
   return (
     <ContentButtons>
-      {menus.map((menu: Menu) => (
-        <MenuItem key={menu._id} menu={menu} />
-      ))}
+      {isLoading
+        ? "Carregando..."
+        : menus?.map((menu: Menu) => <MenuItem key={menu._id} menu={menu} />)}
     </ContentButtons>
   );
 };

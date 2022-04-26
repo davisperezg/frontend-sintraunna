@@ -74,7 +74,7 @@ const ModuleEdit = ({ handleClose, open, moduleId }: Props) => {
   const [module, setModule] = useState<Module>(initialState);
   const [menus, setMenus] = useState<any[]>([]);
   const [menusSelected, setMenusSelected] = useState<string[]>([]);
-  const { mutate, isLoading: isLoadingMutate } = useMutateModule();
+  const { mutateAsync, isLoading: isLoadingMutate } = useMutateModule();
   const { data, isLoading } = useModule(moduleId);
   const [value, setValue] = useState(0);
 
@@ -86,24 +86,20 @@ const ModuleEdit = ({ handleClose, open, moduleId }: Props) => {
     setModule({ ...module, [prop]: value });
   };
 
-  const handleOk = () => {
-    mutate(
-      {
+  const handleOk = async () => {
+    try {
+      await mutateAsync({
         dataModule: { ...module, menu: menusSelected },
         idUpdateData: module._id,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Modulo actualizado. !");
-          setModule(initialState);
-          handleClose();
-        },
-        onError: (e) => {
-          const error: Error = JSON.parse(e.request.response);
-          toast.error(error.message);
-        },
-      }
-    );
+      });
+      toast.success("Modulo actualizado. !");
+      setModule(initialState);
+      setMenusSelected([]);
+      handleClose();
+    } catch (e: any) {
+      const error: Error = JSON.parse(e.request.response);
+      toast.error(error.message);
+    }
   };
 
   const handleCheckMenus = (value: string[]) => {

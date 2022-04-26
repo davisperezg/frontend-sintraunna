@@ -70,7 +70,7 @@ const ModuleCreate = ({ handleClose, open }: Props) => {
   const [module, setModule] = useState<Module>(initialState);
   const [menus, setMenus] = useState<any[]>([]);
   const [menuSelected, setMenuSelected] = useState<string[]>([]);
-  const { mutate, isLoading: isLoadingMutate } = useMutateModule();
+  const { mutateAsync, isLoading: isLoadingMutate } = useMutateModule();
   const [value, setValue] = useState(0);
 
   const handleChangeTab = (event: SyntheticEvent, newValue: number) => {
@@ -81,23 +81,17 @@ const ModuleCreate = ({ handleClose, open }: Props) => {
     setModule({ ...module, [prop]: value });
   };
 
-  const handleOk = () => {
-    mutate(
-      {
+  const handleOk = async () => {
+    try {
+      await mutateAsync({
         dataModule: { ...module, menu: menuSelected },
-      },
-      {
-        onSuccess: () => {
-          toast.success("Modulo creado. !");
-          setModule(initialState);
-          closeModal();
-        },
-        onError: (e) => {
-          const error: Error = JSON.parse(e.request.response);
-          toast.error(error.message);
-        },
-      }
-    );
+      });
+      toast.success("Modulo creado. !");
+      closeModal();
+    } catch (e: any) {
+      const error: Error = JSON.parse(e.request.response);
+      toast.error(error.message);
+    }
   };
 
   const handleCheckModules = (value: string[]) => {

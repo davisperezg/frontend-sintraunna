@@ -35,31 +35,24 @@ const initialState: User = {
 const UserCreate = ({ handleClose, open }: Props) => {
   const { data: roles } = useRoles();
   const [user, setUser] = useState<User>(initialState);
-  const { mutate, isLoading: isLoadingMutate, reset } = useMutateUser();
+  const { mutateAsync, isLoading: isLoadingMutate } = useMutateUser();
 
   const handleChange = <P extends keyof User>(prop: P, value: User[P]) => {
     setUser({ ...user, [prop]: value });
   };
 
-  const handleOk = () => {
-    mutate(
-      {
+  const handleOk = async () => {
+    try {
+      await mutateAsync({
         dataUser: user,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Usuario registrado. !");
-          clearValues();
-          setTimeout(() => reset(), 2000);
-          setUser(initialState);
-          handleClose();
-        },
-        onError: (e) => {
-          const error: Error = JSON.parse(e.request.response);
-          toast.error(error.message);
-        },
-      }
-    );
+      });
+      toast.success("Usuario registrado. !");
+      clearValues();
+      handleClose();
+    } catch (e: any) {
+      const error: Error = JSON.parse(e.request.response);
+      toast.error(error.message);
+    }
   };
 
   const clearValues = () => {
