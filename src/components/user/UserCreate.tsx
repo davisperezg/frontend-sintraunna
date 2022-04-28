@@ -87,8 +87,12 @@ const UserCreate = ({ handleClose, open }: Props) => {
                     onChange={(e) => handleChange("role", e.target.value)}
                   >
                     {roles?.map((role) => (
-                      <MenuItem key={role._id} value={role._id}>
-                        {role.name}
+                      <MenuItem
+                        disabled={role.status ? false : true}
+                        key={role._id}
+                        value={role._id}
+                      >
+                        {role.name} - {role.creator}
                       </MenuItem>
                     ))}
                   </Select>

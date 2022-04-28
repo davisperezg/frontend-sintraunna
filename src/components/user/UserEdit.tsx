@@ -160,10 +160,7 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
       try {
         //mutate usuario
         await mutateAsync({
-          dataUser: {
-            ...user,
-            role: user.roleId as string,
-          },
+          dataUser: user,
           idUpdateData: user._id,
         });
         await mutateResourceUser({
@@ -192,7 +189,7 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
     if (data)
       setUser({
         _id: data?._id,
-        role: data?.role,
+        role: data?.roleId as string,
         tipDocument: data?.tipDocument,
         nroDocument: data?.nroDocument,
         name: data?.name,
@@ -255,8 +252,12 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
                           onChange={(e) => handleChange("role", e.target.value)}
                         >
                           {roles?.map((role) => (
-                            <MenuItem key={role._id} value={role.name}>
-                              {role.name}
+                            <MenuItem
+                              key={role._id}
+                              disabled={role.status ? false : true}
+                              value={role._id}
+                            >
+                              {role.name} - {role.creator}
                             </MenuItem>
                           ))}
                         </Select>

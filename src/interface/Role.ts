@@ -6,4 +6,5 @@ export interface Role {
   description?: string;
   module: Module[] | string[];
   status?: boolean;
+  creator?: string;
 }

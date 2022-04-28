@@ -56,6 +56,7 @@ const CheckBoxItem = ({ options, value, handleChange }: Props) => {
                     ? values.some((value) => value === item)
                     : values.some((value) => value === item.value)
                 }
+                disabled={typeof item === "string" ? false : item.disabled}
               />
             }
             label={typeof item === "string" ? item : item.label}
