@@ -8,6 +8,7 @@ import {
   Tab,
   Tabs,
   FormGroup,
+  Alert,
 } from "@mui/material";
 
 import { SyntheticEvent, useEffect, useState } from "react";
@@ -66,7 +67,12 @@ function a11yProps(index: number) {
 }
 
 const ModuleCreate = ({ handleClose, open }: Props) => {
-  const { data: menusHook, isLoading: isLoadingMenus } = useMenus();
+  const {
+    data: menusHook,
+    isLoading: isLoadingMenus,
+    isError: isErrorListMenus,
+    error: errorListMenus,
+  } = useMenus();
   const [module, setModule] = useState<Module>(initialState);
   const [menus, setMenus] = useState<any[]>([]);
   const [menuSelected, setMenuSelected] = useState<string[]>([]);
@@ -127,6 +133,11 @@ const ModuleCreate = ({ handleClose, open }: Props) => {
           Nuevo Modulo
         </BootstrapDialogTitle>
         <DialogContent dividers>
+          {isErrorListMenus && (
+            <Alert severity="error">
+              {JSON.parse(String(errorListMenus?.request.response)).message}
+            </Alert>
+          )}
           <Box sx={{ width: "100%", height: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs

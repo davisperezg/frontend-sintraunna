@@ -1,5 +1,5 @@
 import Modules from "../components/modules/Modules";
-import { Content, ContentTitle, Title } from "./IndexStyle";
+import { ContentTitle, Title } from "./IndexStyle";
 
 const IndexScreen = () => {
   return (

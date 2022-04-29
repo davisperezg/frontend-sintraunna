@@ -8,6 +8,7 @@ import {
   Tab,
   Tabs,
   FormGroup,
+  Alert,
 } from "@mui/material";
 
 import { SyntheticEvent, useCallback, useEffect, useState } from "react";
@@ -22,7 +23,6 @@ import {
   useResources,
   useResourcesByRol,
 } from "../hooks/useResources";
-import { SA } from "../../consts/const";
 import { ErrorServer } from "../../interface/Error";
 
 interface Props {
@@ -76,17 +76,31 @@ function a11yProps(index: number) {
 }
 
 const RoleEdit = ({ handleClose, open, roleId }: Props) => {
-  const { data: modules, isLoading: isLoadingModules } = useModules();
-  const { data: resources, isLoading: isLoadingResources } = useResources();
+  const {
+    data: modules,
+    isLoading: isLoadingModules,
+    isError: isErrorListModules,
+    error: errorListModules,
+  } = useModules();
+  const {
+    data: resources,
+    isLoading: isLoadingResources,
+    isError: isErrorListResources,
+    error: errorListResources,
+  } = useResources();
   const [role, setRole] = useState<Role>(initialState);
   const [moduleSelected, setModuleSelected] = useState<string[]>([]);
   const [permisosSelected, setPermisosSelected] = useState<string[]>([]);
   const { mutateAsync, isLoading: isLoadingMutate } = useMutateRole();
   const { mutateAsync: mutateResource, isLoading: isLoadingMutateResource } =
     useMutateResourceRol();
-  const { data, isLoading } = useRole(roleId);
-  const { data: dataAccess, isLoading: isLoadingAccess } =
-    useResourcesByRol(roleId);
+  const { data, isLoading, isError, error } = useRole(roleId);
+  const {
+    data: dataAccess,
+    isLoading: isLoadingAccess,
+    isError: isErrorGetRRol,
+    error: errorGetRRol,
+  } = useResourcesByRol(roleId);
   const [value, setValue] = useState(0);
 
   const handleChangeTab = (event: SyntheticEvent, newValue: number) => {
@@ -152,6 +166,8 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
       >
         {isLoading ? (
           "Obteniendo datos..."
+        ) : isError ? (
+          JSON.parse(String(error?.request.response)).message
         ) : (
           <>
             <BootstrapDialogTitle
@@ -161,6 +177,27 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
               Rol - {data?.name}
             </BootstrapDialogTitle>
             <DialogContent dividers>
+              {isErrorGetRRol && (
+                <Alert severity="error">
+                  {JSON.parse(String(errorGetRRol?.request.response)).message}
+                </Alert>
+              )}
+              {isErrorListModules && (
+                <Alert severity="error">
+                  {
+                    JSON.parse(String(errorListModules?.request.response))
+                      .message
+                  }
+                </Alert>
+              )}
+              {isErrorListResources && (
+                <Alert severity="error">
+                  {
+                    JSON.parse(String(errorListResources?.request.response))
+                      .message
+                  }
+                </Alert>
+              )}
               <Box sx={{ width: "100%", height: "100%" }}>
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <Tabs
@@ -175,19 +212,17 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
                 </Box>
                 <TabPanel value={value} index={0}>
                   <Grid container spacing={2}>
-                    {role.name === SA || (
-                      <Grid item md={12}>
-                        <TextField
-                          fullWidth
-                          required
-                          value={role.name}
-                          onChange={(e) => handleChange("name", e.target.value)}
-                          id="name-required"
-                          label="Nombre"
-                          autoComplete="off"
-                        />
-                      </Grid>
-                    )}
+                    <Grid item md={12}>
+                      <TextField
+                        fullWidth
+                        required
+                        value={role.name}
+                        onChange={(e) => handleChange("name", e.target.value)}
+                        id="name-required"
+                        label="Nombre"
+                        autoComplete="off"
+                      />
+                    </Grid>
 
                     <Grid item md={12}>
                       <TextField

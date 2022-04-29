@@ -1,1 +1,1 @@
-export const SA = "SUPER ADMINISTRADOR";
+export const modSA = "Administracion de sistema - PRINCIPAL";

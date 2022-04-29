@@ -8,6 +8,7 @@ import {
   Tab,
   Tabs,
   FormGroup,
+  Alert,
 } from "@mui/material";
 
 import { SyntheticEvent, useState } from "react";
@@ -66,7 +67,12 @@ function a11yProps(index: number) {
 }
 
 const RoleCreate = ({ handleClose, open }: Props) => {
-  const { data: modules, isLoading: isLoadingModules } = useModules();
+  const {
+    data: modules,
+    isLoading: isLoadingModules,
+    isError: isErrorListModules,
+    error: errorListModules,
+  } = useModules();
   const [role, setRole] = useState<Role>(initialState);
   const [moduleSelected, setModuleSelected] = useState<string[]>([]);
   const { mutateAsync, isLoading: isLoadingMutate } = useMutateRole();
@@ -114,6 +120,11 @@ const RoleCreate = ({ handleClose, open }: Props) => {
           Nuevo Rol
         </BootstrapDialogTitle>
         <DialogContent dividers>
+          {isErrorListModules && (
+            <Alert severity="error">
+              {JSON.parse(String(errorListModules?.request.response)).message}
+            </Alert>
+          )}
           <Box sx={{ width: "100%", height: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs

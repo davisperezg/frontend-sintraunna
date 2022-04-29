@@ -9,6 +9,7 @@ import {
   MenuItem,
   Button,
   Box,
+  Alert,
 } from "@mui/material";
 import { useState } from "react";
 import { User } from "../../interface/User";
@@ -33,7 +34,7 @@ const initialState: User = {
 };
 
 const UserCreate = ({ handleClose, open }: Props) => {
-  const { data: roles } = useRoles();
+  const { data: roles, isLoading, isError, error } = useRoles();
   const [user, setUser] = useState<User>(initialState);
   const { mutateAsync, isLoading: isLoadingMutate } = useMutateUser();
 
@@ -73,6 +74,11 @@ const UserCreate = ({ handleClose, open }: Props) => {
           Nuevo Usuario
         </BootstrapDialogTitle>
         <DialogContent dividers>
+          {isError && (
+            <Alert severity="error">
+              {JSON.parse(String(error?.request.response)).message}
+            </Alert>
+          )}
           <Box sx={{ p: 3, width: "100%", height: "100%" }}>
             <Grid container spacing={2}>
               <Grid item md={12}>
@@ -86,15 +92,17 @@ const UserCreate = ({ handleClose, open }: Props) => {
                     label="Rol"
                     onChange={(e) => handleChange("role", e.target.value)}
                   >
-                    {roles?.map((role) => (
-                      <MenuItem
-                        disabled={role.status ? false : true}
-                        key={role._id}
-                        value={role._id}
-                      >
-                        {role.name} - {role.creator}
-                      </MenuItem>
-                    ))}
+                    {isLoading
+                      ? "Cargando roles..."
+                      : roles?.map((role) => (
+                          <MenuItem
+                            disabled={role.status ? false : true}
+                            key={role._id}
+                            value={role._id}
+                          >
+                            {role.name} - {role.creator}
+                          </MenuItem>
+                        ))}
                   </Select>
                 </FormControl>
               </Grid>

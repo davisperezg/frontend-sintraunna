@@ -7,6 +7,7 @@ import { useDeleteRole, useRestoreRol } from "../hooks/useRoles";
 import { toast } from "react-toastify";
 import { Table } from "./ModulesCStyle";
 import { useDeleteModule, useRestoreModule } from "../hooks/useModules";
+import { modSA } from "../../consts/const";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -135,24 +136,26 @@ const ActionesButton = ({ ...rest }) => {
             Editar
           </MenuItem>
         )}
-        <MenuItem
-          onClick={() => {
-            if (rest.row.status) {
-              return desactivateModule(rest.row._id);
-            } else {
-              return restoreModule(rest.row._id);
-            }
-          }}
-          disableRipple
-        >
-          {rest.row.status
-            ? isLoadingDelete
-              ? "Elimnando..."
-              : "Desactivar"
-            : isLoadingRestore
-            ? "Restaurando..."
-            : "Restaurar"}
-        </MenuItem>
+        {rest.row.name === modSA || (
+          <MenuItem
+            onClick={() => {
+              if (rest.row.status) {
+                return desactivateModule(rest.row._id);
+              } else {
+                return restoreModule(rest.row._id);
+              }
+            }}
+            disableRipple
+          >
+            {rest.row.status
+              ? isLoadingDelete
+                ? "Desactivando..."
+                : "Desactivar"
+              : isLoadingRestore
+              ? "Restaurando..."
+              : "Restaurar"}
+          </MenuItem>
+        )}
       </StyledMenu>
     </div>
   );

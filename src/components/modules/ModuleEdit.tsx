@@ -8,6 +8,7 @@ import {
   Tab,
   Tabs,
   FormGroup,
+  Alert,
 } from "@mui/material";
 
 import { SyntheticEvent, useCallback, useEffect, useState } from "react";
@@ -18,6 +19,7 @@ import CheckBoxItem from "../checkbox/CheckBoxItem";
 import { useMenus } from "../hooks/useMenus";
 import { Module } from "../../interface/Module";
 import { Menu } from "../../interface/Menu";
+import { modSA } from "../../consts/const";
 
 interface Props {
   handleClose: () => void;
@@ -70,12 +72,22 @@ function a11yProps(index: number) {
 }
 
 const ModuleEdit = ({ handleClose, open, moduleId }: Props) => {
-  const { data: menusHook, isLoading: isLoadingMenus } = useMenus();
+  const {
+    data: menusHook,
+    isLoading: isLoadingMenus,
+    isError,
+    error,
+  } = useMenus();
   const [module, setModule] = useState<Module>(initialState);
   const [menus, setMenus] = useState<any[]>([]);
   const [menusSelected, setMenusSelected] = useState<string[]>([]);
   const { mutateAsync, isLoading: isLoadingMutate } = useMutateModule();
-  const { data, isLoading } = useModule(moduleId);
+  const {
+    data,
+    isLoading,
+    isError: isErrorGetModule,
+    error: errorGetModule,
+  } = useModule(moduleId);
   const [value, setValue] = useState(0);
 
   const handleChangeTab = (event: SyntheticEvent, newValue: number) => {
@@ -142,6 +154,8 @@ const ModuleEdit = ({ handleClose, open, moduleId }: Props) => {
       >
         {isLoading ? (
           "Obteniendo datos..."
+        ) : isErrorGetModule ? (
+          JSON.parse(String(errorGetModule?.request.response)).message
         ) : (
           <>
             <BootstrapDialogTitle
@@ -151,6 +165,11 @@ const ModuleEdit = ({ handleClose, open, moduleId }: Props) => {
               Modulo - {data?.name}
             </BootstrapDialogTitle>
             <DialogContent dividers>
+              {isError && (
+                <Alert severity="error">
+                  {JSON.parse(String(error?.request.response)).message}
+                </Alert>
+              )}
               <Box sx={{ width: "100%", height: "100%" }}>
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <Tabs
@@ -164,17 +183,20 @@ const ModuleEdit = ({ handleClose, open, moduleId }: Props) => {
                 </Box>
                 <TabPanel value={value} index={0}>
                   <Grid container spacing={2}>
-                    <Grid item md={12}>
-                      <TextField
-                        fullWidth
-                        required
-                        value={module.name}
-                        onChange={(e) => handleChange("name", e.target.value)}
-                        id="name-required"
-                        label="Nombre"
-                        autoComplete="off"
-                      />
-                    </Grid>
+                    {module.name === modSA || (
+                      <Grid item md={12}>
+                        <TextField
+                          fullWidth
+                          required
+                          value={module.name}
+                          onChange={(e) => handleChange("name", e.target.value)}
+                          id="name-required"
+                          label="Nombre"
+                          autoComplete="off"
+                        />
+                      </Grid>
+                    )}
+
                     <Grid item md={12}>
                       <TextField
                         fullWidth

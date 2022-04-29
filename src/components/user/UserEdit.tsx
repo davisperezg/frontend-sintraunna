@@ -12,6 +12,7 @@ import {
   Tab,
   Tabs,
   FormGroup,
+  Alert,
 } from "@mui/material";
 
 import { SyntheticEvent, useCallback, useEffect, useState } from "react";
@@ -88,7 +89,12 @@ function a11yProps(index: number) {
 }
 
 const UserEdit = ({ handleClose, open, userId }: Props) => {
-  const { data: roles } = useRoles();
+  const {
+    data: roles,
+    isLoading: isLoadingListRoles,
+    isError: isErrorListRoles,
+    error: errorListRoles,
+  } = useRoles();
   const [user, setUser] = useState<User>(initialState);
   const [password, setPassword] = useState({
     password: "",
@@ -96,21 +102,44 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
   const { mutateAsync, isLoading: isLoadingMutate } = useMutateUser();
   const { mutateAsync: mutatePassword, isLoading: isLoadingPassword } =
     useChangePassword();
-  const { data, isLoading } = useUser(userId);
+  const {
+    data,
+    isLoading,
+    isError: isErrorGetUser,
+    error: errorGetUser,
+  } = useUser(userId);
   const [value, setValue] = useState(0);
-  const { data: resources, isLoading: isLoadingResources } = useResources();
+  const {
+    data: resources,
+    isLoading: isLoadingResources,
+    isError: isErrorListResources,
+    error: errorListResources,
+  } = useResources();
   const [permisosSelected, setPermisosSelected] = useState<string[]>([]);
   const [modulesSelected, setModulesSelected] = useState<string[]>([]);
-  const { data: resourcesByUsers, isLoading: isLoadingRUsers } =
-    useResourcesByUser(userId);
+  const {
+    data: resourcesByUsers,
+    isLoading: isLoadingRUsers,
+    isError: isErrorRUser,
+    error: errorRUser,
+  } = useResourcesByUser(userId);
   const {
     mutateAsync: mutateResourceUser,
     isLoading: isLoadingMutateResourceUser,
   } = useMutateResourceUser();
 
-  const { data: modulesOfUser, isLoading: isLoadingModulesOfUser } =
-    useModulesByUser(userId);
-  const { data: modules, isLoading: isLoadingModules } = useModules();
+  const {
+    data: modulesOfUser,
+    isLoading: isLoadingModulesOfUser,
+    isError: isErrorGetModulesByUser,
+    error: errorGetModulesByUser,
+  } = useModulesByUser(userId);
+  const {
+    data: modules,
+    isLoading: isLoadingModules,
+    isError: isErrorListModules,
+    error: errorListModules,
+  } = useModules();
   const {
     mutateAsync: mutateServiceUser,
     isLoading: isLoadingMutateServiceUser,
@@ -216,6 +245,8 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
       >
         {isLoading ? (
           "Obteniendo datos..."
+        ) : isErrorGetUser ? (
+          JSON.parse(String(errorGetUser?.request.response)).message
         ) : (
           <>
             <BootstrapDialogTitle
@@ -225,6 +256,40 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
               Usuario - {data?.fullname}
             </BootstrapDialogTitle>
             <DialogContent dividers>
+              {isErrorGetModulesByUser && (
+                <Alert severity="error">
+                  {
+                    JSON.parse(String(errorGetModulesByUser?.request.response))
+                      .message
+                  }
+                </Alert>
+              )}
+              {isErrorListRoles && (
+                <Alert severity="error">
+                  {JSON.parse(String(errorListRoles?.request.response)).message}
+                </Alert>
+              )}
+              {isErrorListModules && (
+                <Alert severity="error">
+                  {
+                    JSON.parse(String(errorListModules?.request.response))
+                      .message
+                  }
+                </Alert>
+              )}
+              {isErrorListResources && (
+                <Alert severity="error">
+                  {
+                    JSON.parse(String(errorListResources?.request.response))
+                      .message
+                  }
+                </Alert>
+              )}
+              {isErrorRUser && (
+                <Alert severity="error">
+                  {JSON.parse(String(errorRUser?.request.response)).message}
+                </Alert>
+              )}
               <Box sx={{ width: "100%", height: "100%" }}>
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <Tabs
@@ -251,15 +316,17 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
                           label="Rol"
                           onChange={(e) => handleChange("role", e.target.value)}
                         >
-                          {roles?.map((role) => (
-                            <MenuItem
-                              key={role._id}
-                              disabled={role.status ? false : true}
-                              value={role._id}
-                            >
-                              {role.name} - {role.creator}
-                            </MenuItem>
-                          ))}
+                          {isLoadingListRoles
+                            ? "Cargando roles..."
+                            : roles?.map((role) => (
+                                <MenuItem
+                                  key={role._id}
+                                  disabled={role.status ? false : true}
+                                  value={role._id}
+                                >
+                                  {role.name} - {role.creator}
+                                </MenuItem>
+                              ))}
                         </Select>
                       </FormControl>
                     </Grid>
@@ -354,7 +421,7 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
                   <FormGroup>
                     <CheckBoxItem
                       options={isLoadingResources ? [] : resources}
-                      value={permisosSelected}
+                      value={isLoadingRUsers ? [] : permisosSelected}
                       handleChange={handleCheckPermisos}
                     />
                   </FormGroup>
@@ -378,7 +445,17 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
                 variant="contained"
                 autoFocus
                 onClick={handleOk}
-                disabled={isLoadingMutate}
+                disabled={
+                  isLoadingPassword
+                    ? true
+                    : isLoadingMutate
+                    ? true
+                    : isLoadingMutateResourceUser
+                    ? true
+                    : isLoadingMutateServiceUser
+                    ? true
+                    : false
+                }
               >
                 OK
               </Button>

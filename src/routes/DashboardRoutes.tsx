@@ -7,12 +7,14 @@ import RoleScreen from "../views/Role/RoleScreen";
 import UserScreen from "../views/User/UserScreen";
 import "react-toastify/dist/ReactToastify.css";
 import ModuleScreen from "../views/Modules/ModuleScreen";
+import NotFoundScreen from "../views/NotFound/NotFoundScreen";
 
 export const DashboardRoutes = () => {
   return (
     <>
       <Layout>
         <Routes>
+          <Route path="*" element={<NotFoundScreen />} />
           <Route path="/" element={<IndexScreen />} />
           <Route path="/module/:id" element={<MenuScreen />} />
           <Route

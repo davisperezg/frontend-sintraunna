@@ -7,7 +7,7 @@ export const ContentButtons = styled.div`
   gap: 30px;
 `;
 
-export const Button = styled.button`
+export const Button = styled.button<{ status: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,18 +18,22 @@ export const Button = styled.button`
   text-decoration: none;
   padding-top: 10px;
   padding-bottom: 10px;
-  cursor: pointer;
+  cursor: ${(props) => (props.status ? "pointer" : "")};
   outline: none;
-  border: none;
-  background-color: #2b56ab;
+  border: ${(props) => (props.status ? "none" : "1px solid #999999")};
+  background-color: ${(props) => (props.status ? "#2b56ab" : "#cccccc")};
 `;
 
-export const MyIconButton = styled.div`
-  color: hsla(0, 0%, 100%, 0.5);
+export const MyIconButton = styled.div<{
+  status: boolean;
+}>`
+  color: ${(props) => (props.status ? "hsla(0, 0%, 100%, 0.5)" : "#666666")};
 `;
 
-export const TitleButton = styled.div`
-  color: #eee;
+export const TitleButton = styled.div<{
+  status: boolean;
+}>`
+  color: ${(props) => (props.status ? "#eee" : "#666666")};
   font-size: 16px;
   font-weight: 700;
   text-align: center;
