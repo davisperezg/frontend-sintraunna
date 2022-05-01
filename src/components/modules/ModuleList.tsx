@@ -3,7 +3,6 @@ import { MouseEvent, useState } from "react";
 import { useTable } from "react-table";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { styled, alpha } from "@mui/material/styles";
-import { useDeleteRole, useRestoreRol } from "../hooks/useRoles";
 import { toast } from "react-toastify";
 import { Table } from "./ModulesCStyle";
 import { useDeleteModule, useRestoreModule } from "../hooks/useModules";

@@ -1,1 +1,1 @@
-export const modSA = "Administracion de sistema - PRINCIPAL";
+export const modSA = "Administración de sistema - PRINCIPAL";

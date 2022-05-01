@@ -18,7 +18,6 @@ import { useModule, useMutateModule } from "../hooks/useModules";
 import CheckBoxItem from "../checkbox/CheckBoxItem";
 import { useMenus } from "../hooks/useMenus";
 import { Module } from "../../interface/Module";
-import { Menu } from "../../interface/Menu";
 import { modSA } from "../../consts/const";
 
 interface Props {
