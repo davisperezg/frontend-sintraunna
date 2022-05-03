@@ -182,7 +182,7 @@ const ModuleEdit = ({ handleClose, open, moduleId }: Props) => {
                 </Box>
                 <TabPanel value={value} index={0}>
                   <Grid container spacing={2}>
-                    {module.name === modSA || (
+                    {module.name !== modSA && (
                       <Grid item md={12}>
                         <TextField
                           fullWidth

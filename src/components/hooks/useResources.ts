@@ -5,9 +5,13 @@ import {
   getResources,
   getResourceByUser,
   createResourceUser,
+  getResourcesToCRUD,
+  getResourcesById,
+  createResource,
 } from "../../api/resource";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { AuthContext } from "../../stateManagement/context";
+import { Permission } from "../../interface/Permission";
 
 const KEY = "resources";
 
@@ -26,6 +30,11 @@ interface ICreateParamsRole {
   idUpdateData?: string;
 }
 
+interface ICreateParamsResource {
+  body: Permission;
+  idUpdateData?: string;
+}
+
 interface ICreateParamsUser {
   body: {
     user: string;
@@ -39,11 +48,9 @@ export const useAccess = () => {
   const { user } = useContext(AuthContext);
   const { role } = user;
 
-  const { data, isLoading, error, isFetching } = useQuery([KEY, role._id], () =>
+  return useQuery([KEY + "_your_permissions", role._id], () =>
     getResourceByRol(role._id)
   );
-
-  return [data, isLoading, error, isFetching];
 };
 
 export const useResourcesByRol = (id: string) => {
@@ -52,6 +59,35 @@ export const useResourcesByRol = (id: string) => {
 
 export const useResources = () => {
   return useQuery<any, IError>([KEY], () => getResources());
+};
+
+export const useResourcesByIdCrud = (id: string) => {
+  return useQuery<any, IError>([KEY + "_crud", id], () => getResourcesById(id));
+};
+
+export const useResourcesToCrud = () => {
+  return useQuery<any, IError>([KEY + "_crud"], () => getResourcesToCRUD());
+};
+
+export const useMuateResource = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<any, IError, ICreateParamsResource>(
+    ({ body, idUpdateData }) => createResource(body, idUpdateData),
+    {
+      onSuccess: (res: any) => {
+        if (!res.created) {
+          queryClient.invalidateQueries([KEY + "_crud"]);
+        } else {
+          const { created } = res;
+          queryClient.setQueryData([KEY + "_crud"], (prevResource: any) =>
+            prevResource.concat(created)
+          );
+          queryClient.invalidateQueries([KEY + "_crud"]);
+        }
+      },
+    }
+  );
 };
 
 export const useMutateResourceRol = () => {

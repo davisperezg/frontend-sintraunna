@@ -135,7 +135,7 @@ const ActionesButton = ({ ...rest }) => {
             Editar
           </MenuItem>
         )}
-        {rest.row.name === modSA || (
+        {rest.row.name !== modSA && (
           <MenuItem
             onClick={() => {
               if (rest.row.status) {

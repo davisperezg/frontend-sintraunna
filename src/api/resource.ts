@@ -1,3 +1,4 @@
+import { Permission } from "./../interface/Permission";
 import axios from "axios";
 import { BASE_API } from "../consts/api";
 
@@ -16,6 +17,16 @@ export const getResources = async () => {
   return data;
 };
 
+export const getResourcesById = async (id: string) => {
+  const { data } = await axios.get(`${BASE_API}/api/v1/resources/find/${id}`);
+  return data;
+};
+
+export const getResourcesToCRUD = async () => {
+  const { data } = await axios.get(`${BASE_API}/api/v1/resources/list`);
+  return data;
+};
+
 export const getResourceByRol = async (id: string) => {
   const { data } = await axios.get(
     `${BASE_API}/api/v1/resources-roles/role/${id}`
@@ -28,6 +39,19 @@ export const getResourceByUser = async (id: string) => {
     `${BASE_API}/api/v1/resources-users/user/${id}`
   );
   return data;
+};
+
+export const createResource = async (body: Permission, idData?: string) => {
+  if (idData) {
+    const { data } = await axios.put(
+      `${BASE_API}/api/v1/resources/${idData}`,
+      body
+    );
+    return data;
+  } else {
+    const { data } = await axios.post(`${BASE_API}/api/v1/resources`, body);
+    return data;
+  }
 };
 
 export const createResourceRole = async (body: IDataRole, idData?: string) => {

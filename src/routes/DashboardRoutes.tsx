@@ -8,6 +8,7 @@ import UserScreen from "../views/User/UserScreen";
 import "react-toastify/dist/ReactToastify.css";
 import ModuleScreen from "../views/Modules/ModuleScreen";
 import NotFoundScreen from "../views/NotFound/NotFoundScreen";
+import PermissionsScreen from "../views/Permissions/PermissionsScreen";
 
 export const DashboardRoutes = () => {
   return (
@@ -28,6 +29,10 @@ export const DashboardRoutes = () => {
           <Route
             path="/module/:idModule/menu/:idMenu/modulos"
             element={<ModuleScreen />}
+          />
+          <Route
+            path="/module/:idModule/menu/:idMenu/permisos"
+            element={<PermissionsScreen />}
           />
         </Routes>
         <ToastContainer />

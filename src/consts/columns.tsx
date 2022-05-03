@@ -105,3 +105,18 @@ export const columnModules = [
     ),
   },
 ];
+
+export const columnResources = [
+  {
+    Header: "Permisos",
+    accessor: "name",
+  },
+  {
+    Header: "Descripción",
+    accessor: "description",
+  },
+  {
+    Header: "KEY",
+    accessor: "key",
+  },
+];
