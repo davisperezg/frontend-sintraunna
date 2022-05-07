@@ -299,8 +299,8 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
                   >
                     <Tab label="General" {...a11yProps(0)} />
                     <Tab label="Cambiar contraseña" {...a11yProps(1)} />
-                    <Tab label="Permisos" {...a11yProps(2)} />
-                    <Tab label="Servicios" {...a11yProps(3)} />
+                    <Tab label="Servicios" {...a11yProps(2)} />
+                    <Tab label="Permisos" {...a11yProps(3)} />
                   </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
@@ -420,18 +420,18 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
                 <TabPanel value={value} index={2}>
                   <FormGroup>
                     <CheckBoxItem
-                      options={isLoadingResources ? [] : resources}
-                      value={isLoadingRUsers ? [] : permisosSelected}
-                      handleChange={handleCheckPermisos}
+                      options={isLoadingModules ? [] : (modules as [])}
+                      value={isLoadingModulesOfUser ? [] : modulesSelected}
+                      handleChange={handleCheckModules}
                     />
                   </FormGroup>
                 </TabPanel>
                 <TabPanel value={value} index={3}>
                   <FormGroup>
                     <CheckBoxItem
-                      options={isLoadingModules ? [] : (modules as [])}
-                      value={isLoadingModulesOfUser ? [] : modulesSelected}
-                      handleChange={handleCheckModules}
+                      options={isLoadingResources ? [] : resources}
+                      value={isLoadingRUsers ? [] : permisosSelected}
+                      handleChange={handleCheckPermisos}
                     />
                   </FormGroup>
                 </TabPanel>

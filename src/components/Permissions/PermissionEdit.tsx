@@ -61,7 +61,7 @@ const PermissionEdit = ({ handleClose, open, permissionId }: Props) => {
         body: permisssion,
         idUpdateData: permissionId,
       });
-      toast.success("Modulo actualizado. !");
+      toast.success("Permiso actualizado. !");
       setPermission(initialState);
       handleClose();
     } catch (e: any) {

@@ -37,7 +37,7 @@ const PermissionCreate = ({ handleClose, open }: Props) => {
       await mutateCP({
         body: permisssion,
       });
-      toast.success("Usuario registrado. !");
+      toast.success("Permiso registrado. !");
       clearValues();
       handleClose();
     } catch (e: any) {

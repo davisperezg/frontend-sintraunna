@@ -8,16 +8,18 @@ import {
   MenuItem,
   Tooltip,
 } from "@mui/material";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useState, useContext } from "react";
 import { stringAvatar } from "../../utils/avatarUtil";
 import { Head, Logo, Navigation, User } from "./IndexStyle";
 import logo from "../../assets/LogoLigiyapp.png";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../stateManagement/context";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   const handleClick = (event: MouseEvent<HTMLElement>) =>
     setAnchorEl(event.currentTarget);
@@ -45,7 +47,7 @@ const Header = () => {
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
             >
-              <Avatar {...stringAvatar("Davis Keiner")} />
+              <Avatar {...stringAvatar(user.fullname)} />
             </IconButton>
           </Tooltip>
           <Menu
