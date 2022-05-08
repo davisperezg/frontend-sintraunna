@@ -316,17 +316,19 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
                           label="Rol"
                           onChange={(e) => handleChange("role", e.target.value)}
                         >
-                          {isLoadingListRoles
-                            ? "Cargando roles..."
-                            : roles?.map((role) => (
-                                <MenuItem
-                                  key={role._id}
-                                  disabled={role.status ? false : true}
-                                  value={role._id}
-                                >
-                                  {role.name} - {role.creator}
-                                </MenuItem>
-                              ))}
+                          {isLoadingListRoles ? (
+                            <MenuItem>Cargando roles...</MenuItem>
+                          ) : (
+                            roles?.map((role) => (
+                              <MenuItem
+                                key={role._id}
+                                disabled={role.status ? false : true}
+                                value={role._id}
+                              >
+                                {role.name} - {role.creator}
+                              </MenuItem>
+                            ))
+                          )}
                         </Select>
                       </FormControl>
                     </Grid>

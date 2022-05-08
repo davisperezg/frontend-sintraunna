@@ -47,7 +47,7 @@ const Header = () => {
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
             >
-              <Avatar {...stringAvatar(user.fullname)} />
+              <Avatar {...stringAvatar(user.fullname || "Cuenta Anonima")} />
             </IconButton>
           </Tooltip>
           <Menu

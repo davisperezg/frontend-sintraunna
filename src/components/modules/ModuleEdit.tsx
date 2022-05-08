@@ -11,7 +11,13 @@ import {
   Alert,
 } from "@mui/material";
 
-import { SyntheticEvent, useCallback, useEffect, useState } from "react";
+import {
+  SyntheticEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { BootstrapDialog, BootstrapDialogTitle } from "../modal";
 import { toast } from "react-toastify";
 import { useModule, useMutateModule } from "../hooks/useModules";
@@ -19,6 +25,7 @@ import CheckBoxItem from "../checkbox/CheckBoxItem";
 import { useMenus } from "../hooks/useMenus";
 import { Module } from "../../interface/Module";
 import { modSA } from "../../consts/const";
+import { AuthContext } from "../../stateManagement/context";
 
 interface Props {
   handleClose: () => void;
@@ -88,6 +95,7 @@ const ModuleEdit = ({ handleClose, open, moduleId }: Props) => {
     error: errorGetModule,
   } = useModule(moduleId);
   const [value, setValue] = useState(0);
+  const { user } = useContext(AuthContext);
 
   const handleChangeTab = (event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -177,7 +185,9 @@ const ModuleEdit = ({ handleClose, open, moduleId }: Props) => {
                     aria-label="basic tabs example"
                   >
                     <Tab label="General" {...a11yProps(0)} />
-                    <Tab label="Menus" {...a11yProps(1)} />
+                    {module.name !== modSA  && (
+                      <Tab label="Menus" {...a11yProps(1)} />
+                    )}
                   </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
@@ -211,13 +221,17 @@ const ModuleEdit = ({ handleClose, open, moduleId }: Props) => {
                   </Grid>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                  <FormGroup>
-                    <CheckBoxItem
-                      options={isLoadingMenus ? [] : (menus as [])}
-                      value={menusSelected}
-                      handleChange={handleCheckMenus}
-                    />
-                  </FormGroup>
+                  {isLoadingMenus ? (
+                    "Cargando menus..."
+                  ) : (
+                    <FormGroup>
+                      <CheckBoxItem
+                        options={menus}
+                        value={menusSelected}
+                        handleChange={handleCheckMenus}
+                      />
+                    </FormGroup>
+                  )}
                 </TabPanel>
               </Box>
             </DialogContent>

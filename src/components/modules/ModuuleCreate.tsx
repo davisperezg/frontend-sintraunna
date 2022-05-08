@@ -177,13 +177,17 @@ const ModuleCreate = ({ handleClose, open }: Props) => {
               </Grid>
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <FormGroup>
-                <CheckBoxItem
-                  options={isLoadingMenus ? [] : (menus as [])}
-                  value={menuSelected}
-                  handleChange={handleCheckModules}
-                />
-              </FormGroup>
+              {isLoadingMenus ? (
+                "Cargando menus..."
+              ) : (
+                <FormGroup>
+                  <CheckBoxItem
+                    options={menus}
+                    value={menuSelected}
+                    handleChange={handleCheckModules}
+                  />
+                </FormGroup>
+              )}
             </TabPanel>
           </Box>
         </DialogContent>

@@ -239,21 +239,25 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
                   </Grid>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                  <FormGroup>
-                    <CheckBoxItem
-                      options={isLoadingModules ? [] : (modules as [])}
-                      value={moduleSelected}
-                      handleChange={handleCheckModules}
-                    />
-                  </FormGroup>
-                </TabPanel>
-                <TabPanel value={value} index={2}>
-                  {isLoadingAccess ? (
-                    <p>Cargando recursos...</p>
+                  {isLoadingModules ? (
+                    "Cargando modulos..."
                   ) : (
                     <FormGroup>
                       <CheckBoxItem
-                        options={isLoadingResources ? [] : resources}
+                        options={modules as []}
+                        value={moduleSelected}
+                        handleChange={handleCheckModules}
+                      />
+                    </FormGroup>
+                  )}
+                </TabPanel>
+                <TabPanel value={value} index={2}>
+                  {isLoadingAccess ? (
+                    "Cargando recursos..."
+                  ) : (
+                    <FormGroup>
+                      <CheckBoxItem
+                        options={resources}
                         value={permisosSelected}
                         handleChange={handleCheckPermisos}
                       />

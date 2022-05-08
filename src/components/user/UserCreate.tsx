@@ -48,28 +48,30 @@ const UserCreate = ({ handleClose, open }: Props) => {
         dataUser: user,
       });
       toast.success("Usuario registrado. !");
-      clearValues();
-      handleClose();
+      handleCloseLocal();
     } catch (e: any) {
       const error: Error = JSON.parse(e.request.response);
       toast.error(error.message);
     }
   };
 
-  const clearValues = () => {
-    setUser(initialState);
+  const clearValues = () => setUser(initialState);
+
+  const handleCloseLocal = () => {
+    clearValues();
+    handleClose();
   };
 
   return (
     <>
       <BootstrapDialog
-        onClose={handleClose}
+        onClose={handleCloseLocal}
         aria-labelledby="customized-dialog-title"
         open={open}
       >
         <BootstrapDialogTitle
           id="customized-dialog-title"
-          onClose={handleClose}
+          onClose={handleCloseLocal}
         >
           Nuevo Usuario
         </BootstrapDialogTitle>
@@ -83,18 +85,30 @@ const UserCreate = ({ handleClose, open }: Props) => {
             <Grid container spacing={2}>
               <Grid item md={12}>
                 <FormControl fullWidth>
-                  <InputLabel id="role-select-label">Rol *</InputLabel>
+                  {/* <InputLabel id="role-select-label">Rol *</InputLabel> */}
                   <Select
                     required
                     labelId="role-select-label"
                     id="tipDoc-select"
                     value={user.role as string}
-                    label="Rol"
+                    displayEmpty
+                    // label="Rol"
                     onChange={(e) => handleChange("role", e.target.value)}
                   >
-                    {isLoading
-                      ? "Cargando roles..."
-                      : roles?.map((role) => (
+                    <MenuItem disabled value="">
+                      [Seleccione un rol]
+                    </MenuItem>
+                    {isLoading ? (
+                      <MenuItem>Cargando roles...</MenuItem>
+                    ) : roles?.length === 0 ? (
+                      <MenuItem disabled={true} value="vaciox">
+                        <strong style={{ color: "red" }}>
+                          No se encontró ningún rol. Por favor crea uno nuevo.
+                        </strong>
+                      </MenuItem>
+                    ) : (
+                      roles?.map((role) => {
+                        return (
                           <MenuItem
                             disabled={role.status ? false : true}
                             key={role._id}
@@ -102,7 +116,18 @@ const UserCreate = ({ handleClose, open }: Props) => {
                           >
                             {role.name} - {role.creator}
                           </MenuItem>
-                        ))}
+                        );
+                      })
+                    )}
+                    {/* {roles?.map((role) => (
+                          <MenuItem
+                            disabled={role.status ? false : true}
+                            key={role._id}
+                            value={role._id}
+                          >
+                            {role.name} - {role.creator}
+                          </MenuItem>
+                        ))} */}
                   </Select>
                 </FormControl>
               </Grid>
@@ -180,7 +205,7 @@ const UserCreate = ({ handleClose, open }: Props) => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={handleClose}>
+          <Button variant="outlined" onClick={handleCloseLocal}>
             Cancelar
           </Button>
           <Button

@@ -164,13 +164,17 @@ const RoleCreate = ({ handleClose, open }: Props) => {
               </Grid>
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <FormGroup>
-                <CheckBoxItem
-                  options={isLoadingModules ? [] : (modules as [])}
-                  value={moduleSelected}
-                  handleChange={handleCheckModules}
-                />
-              </FormGroup>
+              {isLoadingModules ? (
+                "Cargando modulos..."
+              ) : (
+                <FormGroup>
+                  <CheckBoxItem
+                    options={modules as []}
+                    value={moduleSelected}
+                    handleChange={handleCheckModules}
+                  />
+                </FormGroup>
+              )}
             </TabPanel>
           </Box>
         </DialogContent>
