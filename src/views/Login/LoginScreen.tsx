@@ -67,7 +67,6 @@ const LoginScreen = () => {
     localStorage.setItem("access_token", access_token);
     localStorage.setItem("refresh_token", refresh_token);
     const { data: dataUser } = await whois();
-    console.log("dataUser", dataUser);
     const { user: myData } = dataUser;
     setUser(myData);
     localStorage.setItem("user", JSON.stringify(dataUser));

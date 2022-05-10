@@ -24,6 +24,7 @@ import {
   useResourcesByRol,
 } from "../hooks/useResources";
 import { ErrorServer } from "../../interface/Error";
+import { resourcesByDefault, rolSA } from "../../consts/const";
 
 interface Props {
   handleClose: () => void;
@@ -89,6 +90,7 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
     error: errorListResources,
   } = useResources();
   const [role, setRole] = useState<Role>(initialState);
+  const [resToList, setResToList] = useState<any[]>([]);
   const [moduleSelected, setModuleSelected] = useState<string[]>([]);
   const [permisosSelected, setPermisosSelected] = useState<string[]>([]);
   const { mutateAsync, isLoading: isLoadingMutate } = useMutateRole();
@@ -97,7 +99,7 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
   const { data, isLoading, isError, error } = useRole(roleId);
   const {
     data: dataAccess,
-    isLoading: isLoadingAccess,
+    //isLoading: isLoadingAccess,
     isError: isErrorGetRRol,
     error: errorGetRRol,
   } = useResourcesByRol(roleId);
@@ -150,12 +152,46 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
       });
 
     setModuleSelected(data?.module as []);
+
     setPermisosSelected(dataAccess);
   }, [data, dataAccess]);
 
+  const loadRes = useCallback(() => {
+    if (role.name === rolSA) {
+      if (resources) {
+        const findRes: any[] = [];
+        resources.filter((a: any) => {
+          resourcesByDefault.filter((b: any) => {
+            if (a.value.toLowerCase() === b.key.toLowerCase()) {
+              findRes.push(a);
+            }
+          });
+        });
+        const difRes = resources.filter((a: any) => !findRes.includes(a));
+        const resToOwnerDis = findRes.map((a) => {
+          return {
+            ...a,
+            disabled: true,
+          };
+        });
+        const resToOwnerAct = difRes.map((a: any) => {
+          return {
+            ...a,
+            disabled: false,
+          };
+        });
+        const resourcesToOwner = resToOwnerDis.concat(resToOwnerAct);
+        setResToList(resourcesToOwner);
+      }
+    } else {
+      setResToList(resources);
+    }
+  }, [role.name, resources]);
+
   useEffect(() => {
     loadRole();
-  }, [loadRole]);
+    loadRes();
+  }, [loadRole, loadRes]);
 
   return (
     <>
@@ -212,17 +248,19 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
                 </Box>
                 <TabPanel value={value} index={0}>
                   <Grid container spacing={2}>
-                    <Grid item md={12}>
-                      <TextField
-                        fullWidth
-                        required
-                        value={role.name}
-                        onChange={(e) => handleChange("name", e.target.value)}
-                        id="name-required"
-                        label="Nombre"
-                        autoComplete="off"
-                      />
-                    </Grid>
+                    {role.name !== rolSA && (
+                      <Grid item md={12}>
+                        <TextField
+                          fullWidth
+                          required
+                          value={role.name}
+                          onChange={(e) => handleChange("name", e.target.value)}
+                          id="name-required"
+                          label="Nombre"
+                          autoComplete="off"
+                        />
+                      </Grid>
+                    )}
 
                     <Grid item md={12}>
                       <TextField
@@ -252,12 +290,12 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
                   )}
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-                  {isLoadingAccess ? (
+                  {isLoadingResources ? (
                     "Cargando recursos..."
                   ) : (
                     <FormGroup>
                       <CheckBoxItem
-                        options={resources}
+                        options={resToList}
                         value={permisosSelected}
                         handleChange={handleCheckPermisos}
                       />

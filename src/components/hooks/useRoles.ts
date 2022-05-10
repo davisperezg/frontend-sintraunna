@@ -33,10 +33,8 @@ export const useMutateRole = () => {
     {
       onSuccess: (res: any) => {
         if (!res.role) {
-          console.log("AcTUALIZA");
           queryClient.invalidateQueries([KEY]);
         } else {
-          console.log("Crea");
           const { role } = res;
           queryClient.setQueryData([KEY], (prevRoles: any) =>
             prevRoles.concat(role)

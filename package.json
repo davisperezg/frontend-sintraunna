@@ -1,6 +1,6 @@
 {
-  "name": "app-ticket",
-  "version": "1.0.0",
+  "name": "app-rpum",
+  "version": "1.1.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.8.2",

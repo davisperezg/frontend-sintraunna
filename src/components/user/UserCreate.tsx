@@ -17,6 +17,7 @@ import { useRoles } from "../hooks/useRoles";
 import { BootstrapDialog, BootstrapDialogTitle } from "../modal";
 import { useMutateUser } from "../hooks/useUsers";
 import { toast } from "react-toastify";
+import { rolSA } from "../../consts/const";
 
 interface Props {
   handleClose: () => void;
@@ -109,13 +110,15 @@ const UserCreate = ({ handleClose, open }: Props) => {
                     ) : (
                       roles?.map((role) => {
                         return (
-                          <MenuItem
-                            disabled={role.status ? false : true}
-                            key={role._id}
-                            value={role._id}
-                          >
-                            {role.name} - {role.creator}
-                          </MenuItem>
+                          role.name !== rolSA && (
+                            <MenuItem
+                              disabled={role.status ? false : true}
+                              key={role._id}
+                              value={role._id}
+                            >
+                              {role.name} - {role.creator}
+                            </MenuItem>
+                          )
                         );
                       })
                     )}

@@ -6,6 +6,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { styled, alpha } from "@mui/material/styles";
 import { useDeleteRole, useRestoreRol } from "../hooks/useRoles";
 import { toast } from "react-toastify";
+import { rolSA } from "../../consts/const";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -133,24 +134,26 @@ const ActionesButton = ({ ...rest }) => {
             Editar
           </MenuItem>
         )}
-        <MenuItem
-          onClick={() => {
-            if (rest.row.status) {
-              return desactivateRol(rest.row._id);
-            } else {
-              return restoreRole(rest.row._id);
-            }
-          }}
-          disableRipple
-        >
-          {rest.row.status
-            ? isLoadingDelete
-              ? "Elimnando..."
-              : "Desactivar"
-            : isLoadingRestore
-            ? "Restaurando..."
-            : "Restaurar"}
-        </MenuItem>
+        {rest.row.name !== rolSA && (
+          <MenuItem
+            onClick={() => {
+              if (rest.row.status) {
+                return desactivateRol(rest.row._id);
+              } else {
+                return restoreRole(rest.row._id);
+              }
+            }}
+            disableRipple
+          >
+            {rest.row.status
+              ? isLoadingDelete
+                ? "Elimnando..."
+                : "Desactivar"
+              : isLoadingRestore
+              ? "Restaurando..."
+              : "Restaurar"}
+          </MenuItem>
+        )}
       </StyledMenu>
     </div>
   );

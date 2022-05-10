@@ -33,6 +33,7 @@ import {
   useMutateServicesUser,
 } from "../hooks/useModules";
 import { ErrorServer } from "../../interface/Error";
+import { rolSA } from "../../consts/const";
 
 interface Props {
   handleClose: () => void;
@@ -319,15 +320,19 @@ const UserEdit = ({ handleClose, open, userId }: Props) => {
                           {isLoadingListRoles ? (
                             <MenuItem>Cargando roles...</MenuItem>
                           ) : (
-                            roles?.map((role) => (
-                              <MenuItem
-                                key={role._id}
-                                disabled={role.status ? false : true}
-                                value={role._id}
-                              >
-                                {role.name} - {role.creator}
-                              </MenuItem>
-                            ))
+                            roles?.map((role) => {
+                              return (
+                                role.name !== rolSA && (
+                                  <MenuItem
+                                    key={role._id}
+                                    disabled={role.status ? false : true}
+                                    value={role._id}
+                                  >
+                                    {role.name} - {role.creator}
+                                  </MenuItem>
+                                )
+                              );
+                            })
                           )}
                         </Select>
                       </FormControl>
