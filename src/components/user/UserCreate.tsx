@@ -122,15 +122,6 @@ const UserCreate = ({ handleClose, open }: Props) => {
                         );
                       })
                     )}
-                    {/* {roles?.map((role) => (
-                          <MenuItem
-                            disabled={role.status ? false : true}
-                            key={role._id}
-                            value={role._id}
-                          >
-                            {role.name} - {role.creator}
-                          </MenuItem>
-                        ))} */}
                   </Select>
                 </FormControl>
               </Grid>

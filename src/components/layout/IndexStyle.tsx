@@ -61,4 +61,9 @@ export const Main = styled.div`
   max-width: 1440px;
   margin: 0 auto;
   padding-bottom: 200px;
+
+  @media (max-width: 1440px) {
+    padding: 20px;
+    padding-bottom: 200px;
+  }
 `;

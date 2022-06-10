@@ -24,7 +24,7 @@ import {
   TitleLogin,
   ContentTitle,
 } from "./LoginStyle";
-import logo from "../../assets/LogoLigiyapp.png";
+import logo from "../../assets/logo_club.jpg";
 import { postLogin, whois } from "../../api/auth";
 import { AuthContext } from "../../stateManagement/context";
 
@@ -80,7 +80,7 @@ const LoginScreen = () => {
       <MyLogin>
         <FormLogin onSubmit={onSubmit}>
           <ContentTitle>
-            <TitleLogin>Iniciar Sesión</TitleLogin>
+            <TitleLogin>Iniciar sesion</TitleLogin>
           </ContentTitle>
           <TextField
             onChange={handleChange("email")}

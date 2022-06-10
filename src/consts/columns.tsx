@@ -1,4 +1,5 @@
 import { Chip, Stack } from "@mui/material";
+import { formatDate } from "../utils/helpers/functions";
 
 export const columnUsers = [
   {
@@ -118,5 +119,73 @@ export const columnResources = [
   {
     Header: "KEY",
     accessor: "key",
+  },
+];
+
+export const columnIngreso = [
+  {
+    Header: "Fecha de ingreso",
+    accessor: "fecha",
+    Cell: ({ value }: { value: any }) =>
+      formatDate(new Date(String(value)), false),
+  },
+  {
+    Header: "Partido VS",
+    accessor: "partido_vs",
+  },
+  {
+    Header: "L / V",
+    accessor: "local_visita",
+  },
+  {
+    Header: "Fase copa Perú",
+    accessor: "fase_copaPeru",
+  },
+  {
+    Header: "Estado",
+    accessor: "status",
+    Cell: ({ value }: { value: boolean }) => (
+      <Stack direction="row" spacing={1} style={{ justifyContent: "center" }}>
+        {value ? (
+          <Chip label="Activo" color="success" />
+        ) : (
+          <Chip label="Inactivo" color="error" />
+        )}
+      </Stack>
+    ),
+  },
+];
+
+export const columnEgreso = [
+  {
+    Header: "Fecha de egreso",
+    accessor: "fecha",
+    Cell: ({ value }: { value: any }) =>
+      formatDate(new Date(String(value)), false),
+  },
+  {
+    Header: "Partido VS",
+    accessor: "partido_vs",
+  },
+  {
+    Header: "L / V",
+    accessor: "local_visita",
+  },
+  {
+    Header: "Fase copa Perú",
+    accessor: "fase_copaPeru",
+  },
+  {
+    Header: "Estado",
+    accessor: "status",
+    Cell: ({ value }: { value: boolean }) => (
+      <Stack direction="row" spacing={1} style={{ justifyContent: "center" }}>
+        {value ? (
+          <Chip label="Activo" color="success" />
+        ) : (
+          <Chip label="Inactivo" color="error" />
+        )}
+      </Stack>
+    ),
   },
 ];

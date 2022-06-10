@@ -9,6 +9,10 @@ import "react-toastify/dist/ReactToastify.css";
 import ModuleScreen from "../views/Modules/ModuleScreen";
 import NotFoundScreen from "../views/NotFound/NotFoundScreen";
 import PermissionsScreen from "../views/Permissions/PermissionsScreen";
+import IngresoScreen from "../views/Ingreso/IngresoScreen";
+import EgresoScreen from "../views/Egreso/EgresoScreen";
+import EgresoDetailsScreen from "../views/Egreso/EgresoDetailsScreen";
+import IngresoDetailsScreen from "../views/Ingreso/IngresoDetailsScreen";
 
 export const DashboardRoutes = () => {
   return (
@@ -33,6 +37,22 @@ export const DashboardRoutes = () => {
           <Route
             path="/module/:idModule/menu/:idMenu/permisos"
             element={<PermissionsScreen />}
+          />
+          <Route
+            path="/module/:idModule/menu/:idMenu/ingresos"
+            element={<IngresoScreen />}
+          />
+          <Route
+            path="/module/:idModule/menu/:idMenu/egresos"
+            element={<EgresoScreen />}
+          />
+          <Route
+            path="/module/:idModule/menu/:idMenu/egresos/:idEgreso"
+            element={<EgresoDetailsScreen />}
+          />
+          <Route
+            path="/module/:idModule/menu/:idMenu/ingresos/:idIngreso"
+            element={<IngresoDetailsScreen />}
           />
         </Routes>
         <ToastContainer />

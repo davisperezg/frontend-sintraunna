@@ -12,7 +12,7 @@ export const Img = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #1565c0;
+  background-color: #184bb4;
 `;
 
 export const MyLogin = styled.div`
