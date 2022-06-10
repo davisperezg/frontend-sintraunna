@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.8db62d89.css",
+    "main.js": "/static/js/main.2e5bad65.js",
+    "static/js/787.f7fda5a4.chunk.js": "/static/js/787.f7fda5a4.chunk.js",
+    "static/media/logo_club.jpg": "/static/media/logo_club.327148be4ce555105214.jpg",
+    "index.html": "/index.html",
+    "main.8db62d89.css.map": "/static/css/main.8db62d89.css.map",
+    "main.2e5bad65.js.map": "/static/js/main.2e5bad65.js.map",
+    "787.f7fda5a4.chunk.js.map": "/static/js/787.f7fda5a4.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8db62d89.css",
+    "static/js/main.2e5bad65.js"
+  ]
+}
