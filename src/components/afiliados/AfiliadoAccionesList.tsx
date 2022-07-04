@@ -12,15 +12,15 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { StyledMenu } from "../General/CSSIndex";
 import { toast } from "react-toastify";
 import { useState, MouseEvent } from "react";
-import { useDeleteEgreso, useRestoreEgreso } from "../hooks/useEgreso";
+import { useDeleteAfiliado, useRestoreAfiliado } from "../hooks/useAfiliados";
 import { useAccess } from "../hooks/useResources";
 
-const EgresoAccionsList = ({ ...rest }) => {
+const AfiliadoAccionsList = ({ ...rest }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const [openAnular, setOpenAnular] = useState(false);
-  const [motivo, setMotivo] = useState("");
+  const [openDelete, setOpenDelete] = useState(false);
   const [openRestore, setOpenRestore] = useState(false);
+  const [motivo, setMotivo] = useState("");
   const {
     data: dataAccess,
     isLoading: isLoadingAccess,
@@ -29,10 +29,10 @@ const EgresoAccionsList = ({ ...rest }) => {
   } = useAccess();
 
   const { mutate: mutateDelete, isLoading: isLoadingDelete } =
-    useDeleteEgreso();
+    useDeleteAfiliado();
 
   const { mutate: mutateRestore, isLoading: isLoadingRestore } =
-    useRestoreEgreso();
+    useRestoreAfiliado();
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -42,8 +42,12 @@ const EgresoAccionsList = ({ ...rest }) => {
     setAnchorEl(null);
   };
 
+  const handleChange = (e: any) => {
+    setMotivo(e.target.value);
+  };
+
   const handleClickOpenAnular = () => {
-    setOpenAnular(true);
+    setOpenDelete(true);
     handleClose();
   };
 
@@ -53,7 +57,7 @@ const EgresoAccionsList = ({ ...rest }) => {
   };
 
   const handleCloseAnular = () => {
-    setOpenAnular(false);
+    setOpenDelete(false);
     setMotivo("");
   };
 
@@ -100,38 +104,29 @@ const EgresoAccionsList = ({ ...rest }) => {
     );
   };
 
-  const handleChange = (e: any) => {
-    setMotivo(e.target.value);
-  };
-
   const openEdit = (id: string) => {
     rest.handleClickOpen(id);
     handleClose();
   };
 
-  // const openDetails = (id: string) => {
-  //   rest.handleClickDetails(id);
-  //   handleClose();
-  // };
-
   return (
     <div style={{ textAlign: "center" }}>
       <Dialog
-        open={openAnular}
+        open={openDelete}
         onClose={handleCloseAnular}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Anular"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"Eliminar"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            ¿Esta seguro que desea anular el egreso?
+            ¿Esta seguro que desea eliminar al afiliado?
           </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
             id="motivo"
-            label="Escribe el motivo de la anulación"
+            label="Escribe el motivo de la eliminación"
             type="text"
             onChange={handleChange}
             fullWidth
@@ -141,7 +136,7 @@ const EgresoAccionsList = ({ ...rest }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => desactivateEgres(rest.row._id)} autoFocus>
-            Anular de todas formas
+            Eliminar de todas formas
           </Button>
           <Button variant="contained" onClick={handleCloseAnular}>
             Cancelar
@@ -158,7 +153,7 @@ const EgresoAccionsList = ({ ...rest }) => {
         <DialogTitle id="alert-dialog-title">{"Restaurar"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            ¿Esta seguro que desea restaurar egreso?
+            ¿Esta seguro que desea restaurar al afiliado?
           </DialogContentText>
           <TextField
             autoFocus
@@ -208,7 +203,7 @@ const EgresoAccionsList = ({ ...rest }) => {
               ? "Verificando permisos..."
               : isErrorAccess
               ? "Ha ocurrido un error por favor comunicarse al soporte"
-              : dataAccess.some((a: any) => a === "canEdit_egresos") && (
+              : dataAccess.some((a: any) => a === "canEdit_afiliados") && (
                   <MenuItem
                     onClick={() => openEdit(rest.row._id)}
                     disableRipple
@@ -226,13 +221,15 @@ const EgresoAccionsList = ({ ...rest }) => {
               ? "Ha ocurrido un error por favor comunicarse al soporte"
               : dataAccess.some(
                   (a: any) =>
-                    a === "canDelete_egresos" || a === "canRestore_egresos"
+                    a === "canDelete_afiliados" || a === "canRestore_afiliados"
                 ) && (
                   <>
                     <MenuItem
                       onClick={() => {
                         if (
-                          dataAccess.some((a: any) => a === "canDelete_egresos")
+                          dataAccess.some(
+                            (a: any) => a === "canDelete_afiliados"
+                          )
                         ) {
                           if (rest.row.status) {
                             return handleClickOpenAnular();
@@ -241,7 +238,7 @@ const EgresoAccionsList = ({ ...rest }) => {
 
                         if (
                           dataAccess.some(
-                            (a: any) => a === "canRestore_egresos"
+                            (a: any) => a === "canRestore_afiliados"
                           )
                         ) {
                           if (!rest.row.status) {
@@ -253,12 +250,12 @@ const EgresoAccionsList = ({ ...rest }) => {
                     >
                       {rest.row.status ? (
                         isLoadingDelete ? (
-                          "Anulando..."
+                          "Eliminando..."
                         ) : (
                           <>
                             {dataAccess.some(
-                              (a: any) => a === "canDelete_egresos"
-                            ) && "Anular"}
+                              (a: any) => a === "canDelete_afiliados"
+                            ) && "Eliminar"}
                           </>
                         )
                       ) : isLoadingRestore ? (
@@ -266,7 +263,7 @@ const EgresoAccionsList = ({ ...rest }) => {
                       ) : (
                         <>
                           {dataAccess.some(
-                            (a: any) => a === "canRestore_egresos"
+                            (a: any) => a === "canRestore_afiliados"
                           ) && "Restaurar"}
                         </>
                       )}
@@ -275,13 +272,9 @@ const EgresoAccionsList = ({ ...rest }) => {
                 )}
           </>
         }
-
-        {/* <MenuItem onClick={() => openDetails(rest.row._id)} disableRipple>
-          Más detalle
-        </MenuItem> */}
       </StyledMenu>
     </div>
   );
 };
 
-export default EgresoAccionsList;
+export default AfiliadoAccionsList;

@@ -12,14 +12,13 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { StyledMenu } from "../General/CSSIndex";
 import { toast } from "react-toastify";
 import { useState, MouseEvent } from "react";
-import { useDeleteEgreso, useRestoreEgreso } from "../hooks/useEgreso";
+import { useDeleteGrupo, useRestoreGrupo } from "../hooks/useGrupos";
 import { useAccess } from "../hooks/useResources";
 
-const EgresoAccionsList = ({ ...rest }) => {
+const GrupoAccionsList = ({ ...rest }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const [openAnular, setOpenAnular] = useState(false);
-  const [motivo, setMotivo] = useState("");
+  const [openDelete, setOpenDelete] = useState(false);
   const [openRestore, setOpenRestore] = useState(false);
   const {
     data: dataAccess,
@@ -28,11 +27,10 @@ const EgresoAccionsList = ({ ...rest }) => {
     error: errorAccess,
   } = useAccess();
 
-  const { mutate: mutateDelete, isLoading: isLoadingDelete } =
-    useDeleteEgreso();
+  const { mutate: mutateDelete, isLoading: isLoadingDelete } = useDeleteGrupo();
 
   const { mutate: mutateRestore, isLoading: isLoadingRestore } =
-    useRestoreEgreso();
+    useRestoreGrupo();
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -43,7 +41,7 @@ const EgresoAccionsList = ({ ...rest }) => {
   };
 
   const handleClickOpenAnular = () => {
-    setOpenAnular(true);
+    setOpenDelete(true);
     handleClose();
   };
 
@@ -53,20 +51,17 @@ const EgresoAccionsList = ({ ...rest }) => {
   };
 
   const handleCloseAnular = () => {
-    setOpenAnular(false);
-    setMotivo("");
+    setOpenDelete(false);
   };
 
   const handleCloseRestore = () => {
     setOpenRestore(false);
-    setMotivo("");
   };
 
   const restoreEgres = (id: string) => {
     mutateRestore(
       {
         id: id,
-        motivo: motivo,
       },
       {
         onSuccess: () => {
@@ -85,7 +80,6 @@ const EgresoAccionsList = ({ ...rest }) => {
     mutateDelete(
       {
         id: id,
-        motivo: motivo,
       },
       {
         onSuccess: () => {
@@ -100,48 +94,28 @@ const EgresoAccionsList = ({ ...rest }) => {
     );
   };
 
-  const handleChange = (e: any) => {
-    setMotivo(e.target.value);
-  };
-
   const openEdit = (id: string) => {
     rest.handleClickOpen(id);
     handleClose();
   };
 
-  // const openDetails = (id: string) => {
-  //   rest.handleClickDetails(id);
-  //   handleClose();
-  // };
-
   return (
     <div style={{ textAlign: "center" }}>
       <Dialog
-        open={openAnular}
+        open={openDelete}
         onClose={handleCloseAnular}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Anular"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"Eliminar Grupo?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            ¿Esta seguro que desea anular el egreso?
+            ¿Esta seguro que desea eliminar al grupo?
           </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="motivo"
-            label="Escribe el motivo de la anulación"
-            type="text"
-            onChange={handleChange}
-            fullWidth
-            required
-            variant="standard"
-          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => desactivateEgres(rest.row._id)} autoFocus>
-            Anular de todas formas
+            Eliminar de todas formas
           </Button>
           <Button variant="contained" onClick={handleCloseAnular}>
             Cancelar
@@ -155,22 +129,11 @@ const EgresoAccionsList = ({ ...rest }) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Restaurar"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"Restaurar Grupo?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            ¿Esta seguro que desea restaurar egreso?
+            ¿Esta seguro que desea restaurar el grupo?
           </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="motivo"
-            label="Escribe el motivo de la restauración"
-            type="text"
-            onChange={handleChange}
-            fullWidth
-            required
-            variant="standard"
-          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => restoreEgres(rest.row._id)} autoFocus>
@@ -208,7 +171,7 @@ const EgresoAccionsList = ({ ...rest }) => {
               ? "Verificando permisos..."
               : isErrorAccess
               ? "Ha ocurrido un error por favor comunicarse al soporte"
-              : dataAccess.some((a: any) => a === "canEdit_egresos") && (
+              : dataAccess.some((a: any) => a === "canEdit_grupos") && (
                   <MenuItem
                     onClick={() => openEdit(rest.row._id)}
                     disableRipple
@@ -226,13 +189,13 @@ const EgresoAccionsList = ({ ...rest }) => {
               ? "Ha ocurrido un error por favor comunicarse al soporte"
               : dataAccess.some(
                   (a: any) =>
-                    a === "canDelete_egresos" || a === "canRestore_egresos"
+                    a === "canDelete_grupos" || a === "canRestore_grupos"
                 ) && (
                   <>
                     <MenuItem
                       onClick={() => {
                         if (
-                          dataAccess.some((a: any) => a === "canDelete_egresos")
+                          dataAccess.some((a: any) => a === "canDelete_grupos")
                         ) {
                           if (rest.row.status) {
                             return handleClickOpenAnular();
@@ -240,9 +203,7 @@ const EgresoAccionsList = ({ ...rest }) => {
                         }
 
                         if (
-                          dataAccess.some(
-                            (a: any) => a === "canRestore_egresos"
-                          )
+                          dataAccess.some((a: any) => a === "canRestore_grupos")
                         ) {
                           if (!rest.row.status) {
                             return handleClickRestore();
@@ -253,12 +214,12 @@ const EgresoAccionsList = ({ ...rest }) => {
                     >
                       {rest.row.status ? (
                         isLoadingDelete ? (
-                          "Anulando..."
+                          "Eliminando..."
                         ) : (
                           <>
                             {dataAccess.some(
-                              (a: any) => a === "canDelete_egresos"
-                            ) && "Anular"}
+                              (a: any) => a === "canDelete_grupos"
+                            ) && "Eliminar"}
                           </>
                         )
                       ) : isLoadingRestore ? (
@@ -266,7 +227,7 @@ const EgresoAccionsList = ({ ...rest }) => {
                       ) : (
                         <>
                           {dataAccess.some(
-                            (a: any) => a === "canRestore_egresos"
+                            (a: any) => a === "canRestore_grupos"
                           ) && "Restaurar"}
                         </>
                       )}
@@ -275,13 +236,9 @@ const EgresoAccionsList = ({ ...rest }) => {
                 )}
           </>
         }
-
-        {/* <MenuItem onClick={() => openDetails(rest.row._id)} disableRipple>
-          Más detalle
-        </MenuItem> */}
       </StyledMenu>
     </div>
   );
 };
 
-export default EgresoAccionsList;
+export default GrupoAccionsList;

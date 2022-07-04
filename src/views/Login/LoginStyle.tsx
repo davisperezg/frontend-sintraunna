@@ -16,7 +16,7 @@ export const Img = styled.div`
 `;
 
 export const MyLogin = styled.div`
-  width: 50%;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -37,6 +37,6 @@ export const ContentTitle = styled.div`
 `;
 
 export const TitleLogin = styled.h1`
-  color: #283e92;
+  color: #000;
   font-size: 32px;
 `;

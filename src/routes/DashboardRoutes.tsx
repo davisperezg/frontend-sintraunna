@@ -11,8 +11,10 @@ import NotFoundScreen from "../views/NotFound/NotFoundScreen";
 import PermissionsScreen from "../views/Permissions/PermissionsScreen";
 import IngresoScreen from "../views/Ingreso/IngresoScreen";
 import EgresoScreen from "../views/Egreso/EgresoScreen";
-import EgresoDetailsScreen from "../views/Egreso/EgresoDetailsScreen";
-import IngresoDetailsScreen from "../views/Ingreso/IngresoDetailsScreen";
+// import IngresoDetailsScreen from "../views/Ingreso/IngresoDetailsScreen";
+import AfiliadoScreen from "../views/Afiliados/AfiliadoScreen";
+import GrupoScreen from "../views/Grupo/GrupoScreen";
+import PagoScreen from "../views/Pago/PagoScreen";
 
 export const DashboardRoutes = () => {
   return (
@@ -47,13 +49,22 @@ export const DashboardRoutes = () => {
             element={<EgresoScreen />}
           />
           <Route
-            path="/module/:idModule/menu/:idMenu/egresos/:idEgreso"
-            element={<EgresoDetailsScreen />}
+            path="/module/:idModule/menu/:idMenu/grupos"
+            element={<GrupoScreen />}
           />
           <Route
+            path="/module/:idModule/menu/:idMenu/pagos"
+            element={<PagoScreen />}
+          />
+          <Route
+            path="/module/:idModule/menu/:idMenu/afiliados"
+            element={<AfiliadoScreen />}
+          />
+
+          {/* <Route
             path="/module/:idModule/menu/:idMenu/ingresos/:idIngreso"
             element={<IngresoDetailsScreen />}
-          />
+          /> */}
         </Routes>
         <ToastContainer />
       </Layout>

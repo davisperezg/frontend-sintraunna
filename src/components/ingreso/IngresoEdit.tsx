@@ -8,11 +8,6 @@ import {
   Tab,
   Tabs,
   FormControl,
-  FormLabel,
-  RadioGroup,
-  Radio,
-  FormControlLabel,
-  InputAdornment,
   Dialog,
   DialogTitle,
   DialogContentText,
@@ -20,6 +15,8 @@ import {
   Toolbar,
   IconButton,
   Typography,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { IModal } from "../../interface/Modal";
 import { BootstrapDialog, BootstrapDialogTitle } from "../modal";
@@ -29,7 +26,13 @@ import {
   formatDate,
   formatter,
 } from "../../utils/helpers/functions";
-import { SyntheticEvent, useCallback, useEffect, useState } from "react";
+import {
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { Ingreso } from "../../interface/Ingreso";
 import { useIngreso } from "../hooks/useIngreso";
@@ -40,19 +43,18 @@ import { toast } from "react-toastify";
 import { ErrorServer } from "../../interface/Error";
 import { Transition } from "../General/ComponentsIndex";
 import CloseIcon from "@mui/icons-material/Close";
+import { Table } from "../../views/IndexStyle";
+import IngresoItem from "./IngresoItemGasto";
+import { useAfiliados } from "../hooks/useAfiliados";
+import { Afiliado } from "../../interface/Afiliado";
+import axios from "axios";
+import { BASE_API } from "../../consts/api";
 
 const initialIngreso: Ingreso = {
   fecha: new Date(),
-  partido_vs: "",
-  local_visita: "Local",
-  fase_copaPeru: "",
-  realizo_actividad: "Si",
-  nombre_actividad: "",
-  ingreso_total_actividad: 0,
-  ingreso_apoyo_tribuna: 0,
-  ingreso_cuota_dirigentes: 0,
-  otros_ingresos: 0,
-  ingreso_taquilla: 0,
+  afiliado: "",
+  detalle_ingreso: "",
+  ingresos_afiliado: [],
 };
 
 const IngresoEdit = ({ handleClose, open, entityId }: IModal) => {
@@ -64,6 +66,20 @@ const IngresoEdit = ({ handleClose, open, entityId }: IModal) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [motivo, setMotivo] = useState("");
   const [openFull, setOpenFull] = useState(false);
+  const [itemsIngresos, setItemsIngresos] = useState<any[]>([]);
+  const [cantIngresos, setCantIngresos] = useState<number[]>([]);
+  const {
+    data: afiliados,
+    isLoading: isLoadingAfiliados,
+    isError: isErrorAfiliados,
+  } = useAfiliados();
+  const [enitityAfiliado, setEntityAfiliado] = useState<{
+    proyecto: string;
+    full_name: string;
+  }>({
+    proyecto: "",
+    full_name: "",
+  });
 
   const handleChangeTab = (event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -87,7 +103,7 @@ const IngresoEdit = ({ handleClose, open, entityId }: IModal) => {
         dataIngreso: { ...ingreso, fecha: valueDate, motivo_editacion: motivo },
         idUpdateData: entityId,
       });
-      toast.success("Liquidación actualizada. !");
+      toast.success("Ingreso del afiliado actualizado. !");
       closeModal();
     } catch (e: any) {
       const error: ErrorServer = JSON.parse(e.request.response);
@@ -106,24 +122,26 @@ const IngresoEdit = ({ handleClose, open, entityId }: IModal) => {
     setIngreso({ ...ingreso, [prop]: value });
   };
 
-  const loadIngreso = useCallback(() => {
+  const loadIngreso = useCallback(async () => {
     if (data)
       setIngreso({
         _id: data?._id,
         fecha: data?.fecha,
-        partido_vs: data?.partido_vs,
-        fase_copaPeru: data?.fase_copaPeru,
-        local_visita: data?.local_visita,
-        realizo_actividad: data?.realizo_actividad,
-        nombre_actividad: data?.nombre_actividad,
-        ingreso_total_actividad: data?.ingreso_total_actividad,
-        ingreso_apoyo_tribuna: data?.ingreso_apoyo_tribuna,
-        ingreso_cuota_dirigentes: data?.ingreso_cuota_dirigentes,
-        otros_ingresos: data?.otros_ingresos,
-        ingreso_taquilla: data?.ingreso_taquilla,
+        afiliado: (data?.afiliado as Afiliado)._id,
+        detalle_ingreso: data?.detalle_ingreso,
+        ingresos_afiliado: data?.ingresos_afiliado,
       });
-
+    const getAfiliado = await axios.get(
+      `${BASE_API}/api/v1/afiliados/find/${(data?.afiliado as Afiliado)._id}`
+    );
+    setEntityAfiliado({
+      proyecto: getAfiliado.data.proyecto,
+      full_name: getAfiliado.data.nombres + " " + getAfiliado.data.apellidos,
+    });
+    setItemsIngresos((data?.ingresos_afiliado as any[]) || []);
     setValueDate(data?.fecha as Date | null);
+    const cantIngresosLocal = data?.ingresos_afiliado.length;
+    setCantIngresos([cantIngresosLocal!]);
   }, [data]);
 
   const handleChangeEdit = (e: any) => {
@@ -137,6 +155,41 @@ const IngresoEdit = ({ handleClose, open, entityId }: IModal) => {
   const handleCloseEdit = () => {
     setOpenEdit(false);
   };
+
+  const handleAddIngresos = useCallback(() => {
+    const getEndNumber = cantIngresos[cantIngresos.length - 1] || 0;
+    setCantIngresos([...cantIngresos, Number(getEndNumber) + 1]);
+    setItemsIngresos([
+      ...itemsIngresos,
+      {
+        nro: Number(getEndNumber) + 1,
+        proyecto: enitityAfiliado.proyecto,
+        concepto: "",
+        importe: 0,
+      },
+    ]);
+  }, [cantIngresos, itemsIngresos, enitityAfiliado.proyecto]);
+
+  const handleRemoveIngreso = (item: number) => {
+    const findNumber = itemsIngresos.filter((a) => a.nro !== item);
+    const reformatedNumbers = findNumber.map((_, i) => i + 1);
+    const reformatedNumbersComponent = findNumber.map((a, i) => {
+      return {
+        ...a,
+        nro: i + 1,
+      };
+    });
+    setItemsIngresos(reformatedNumbersComponent);
+    setCantIngresos(reformatedNumbers);
+  };
+
+  const memoTotal = useMemo(() => {
+    const importeTotal = itemsIngresos.reduce((a: number, b) => {
+      return a + Number(b.importe);
+    }, 0);
+
+    return importeTotal;
+  }, [itemsIngresos]);
 
   useEffect(() => {
     loadIngreso();
@@ -194,7 +247,7 @@ const IngresoEdit = ({ handleClose, open, entityId }: IModal) => {
               <CloseIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              VISTA PREVIA DE LIQUIDACION DE PLANILLA - INGRESO(EDITANDO)
+              INGRESO DEL AFILIADO {enitityAfiliado.full_name} - EDITANDO
             </Typography>
             <Button autoFocus color="inherit" onClick={handleClickEdit}>
               Guardar
@@ -203,77 +256,50 @@ const IngresoEdit = ({ handleClose, open, entityId }: IModal) => {
         </AppBar>
         <div style={{ display: "flex", flexDirection: "column", padding: 24 }}>
           <div style={{ display: "flex", flexDirection: "row" }}>
-            <strong>Fecha de egreso:</strong>&nbsp;&nbsp;
+            <strong>Fecha de ingreso:</strong>&nbsp;&nbsp;
             <label>{formatDate(new Date(String(valueDate)), false)}</label>
           </div>
           <div style={{ display: "flex", flexDirection: "row" }}>
-            <strong>Fase de copa Perú:</strong>&nbsp;&nbsp;
-            <label>{ingreso?.fase_copaPeru}</label>
+            <strong>Afiliado:</strong>&nbsp;&nbsp;
+            <label>{enitityAfiliado.full_name}</label>
           </div>
           <div style={{ display: "flex", flexDirection: "row" }}>
-            <strong>Partido VS:</strong>&nbsp;&nbsp;
-            <label>{ingreso?.partido_vs}</label>
-          </div>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <strong>El encuentro se jugó de:</strong>&nbsp;&nbsp;
-            <label>{ingreso?.local_visita}</label>
+            <strong>Detalle del ingreso:</strong>&nbsp;&nbsp;
+            <label>{ingreso?.detalle_ingreso}</label>
           </div>
           <br />
           <br />
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <strong>Se realizó actividad ?:</strong>&nbsp;&nbsp;
-            <label>{ingreso?.realizo_actividad}</label>
-          </div>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <strong>Nombre de actividad:</strong>&nbsp;&nbsp;
-            <label>{ingreso?.nombre_actividad}</label>
-          </div>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <strong>Ingreso total de actividad:</strong>&nbsp;&nbsp;
-            <label>
-              S/{formatter.format(ingreso?.ingreso_total_actividad)}
-            </label>
-          </div>
-          <br />
-          <br />
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <strong>Ingreso de apoyo tribuna:</strong>&nbsp;&nbsp;
-            <label>S/{formatter.format(ingreso?.ingreso_apoyo_tribuna)}</label>
-          </div>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <strong>Ingreso cuota de dirigentes:</strong>&nbsp;&nbsp;
-            <label>
-              S/{formatter.format(ingreso?.ingreso_cuota_dirigentes)}
-            </label>
-          </div>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <strong>Otros ingresos:</strong>&nbsp;&nbsp;
-            <label>S/{formatter.format(ingreso?.otros_ingresos)}</label>
-          </div>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <strong>Ingreso de taquilla:</strong>&nbsp;&nbsp;
-            <label>S/{formatter.format(ingreso?.ingreso_taquilla)}</label>
-          </div>
-          <br />
-          <br />
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <strong>Total:</strong>&nbsp;&nbsp;
-            <label style={{ color: "green" }}>
-              S/
-              {formatter.format(
-                ingreso.ingreso_total_actividad +
-                  ingreso.ingreso_apoyo_tribuna +
-                  ingreso.ingreso_cuota_dirigentes +
-                  ingreso.otros_ingresos +
-                  ingreso.ingreso_taquilla
-              )}
-            </label>
-          </div>
+          <Table style={{ padding: 0 }}>
+            <table>
+              <thead>
+                <tr>
+                  <th>Nro</th>
+                  <th>Proyecto</th>
+                  <th>Concepto</th>
+                  <th>Importe</th>
+                </tr>
+              </thead>
+              <tbody>
+                {itemsIngresos.map((item) => (
+                  <tr key={item.nro}>
+                    <td>{item.nro}</td>
+                    <td>{item.proyecto}</td>
+                    <td>{item.concepto}</td>
+                    <td>S/{formatter.format(item.importe)}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot style={{ backgroundColor: "green", color: "#fff" }}>
+                <tr>
+                  <td colSpan={3}>Total</td>
+                  <td>
+                    S/
+                    {formatter.format(memoTotal)}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </Table>
         </div>
       </Dialog>
 
@@ -292,8 +318,7 @@ const IngresoEdit = ({ handleClose, open, entityId }: IModal) => {
               id="customized-dialog-title"
               onClose={closeModal}
             >
-              LIQUIDACIÓN({ingreso.local_visita}) REAL FUJIMORI VS{" "}
-              {ingreso.partido_vs}
+              INGRESO DEL AFILIADO {enitityAfiliado.full_name}
             </BootstrapDialogTitle>
             <DialogContent dividers>
               <Box sx={{ width: "100%", height: "100%" }}>
@@ -322,328 +347,78 @@ const IngresoEdit = ({ handleClose, open, entityId }: IModal) => {
                       </LocalizationProvider>
                     </Grid>
                     <Grid item md={12}>
-                      <TextField
-                        fullWidth
-                        required
-                        value={ingreso.partido_vs}
-                        id="partidovs-required"
-                        onChange={(e) =>
-                          handleChange("partido_vs", e.target.value)
-                        }
-                        label="¿El partido se jugó con?"
-                        autoComplete="off"
-                      />
-                    </Grid>
-                    <Grid item md={12}>
-                      <TextField
-                        fullWidth
-                        required
-                        value={ingreso.fase_copaPeru}
-                        id="fasecopa-required"
-                        onChange={(e) =>
-                          handleChange("fase_copaPeru", e.target.value)
-                        }
-                        label="Fase de copa Perú"
-                        autoComplete="off"
-                      />
-                    </Grid>
-                    <Grid item md={6}>
-                      <FormControl>
-                        <FormLabel id="lv-row-radio-buttons-group-label">
-                          Modo de juego
-                        </FormLabel>
-                        <RadioGroup
-                          row
-                          aria-labelledby="lv-row-radio-buttons-group-label"
-                          name="row-radio-buttons-group"
-                          value={ingreso.local_visita}
+                      <FormControl fullWidth>
+                        <Select
+                          required
+                          labelId="afiliado-select-label"
+                          id="afiliado-select"
+                          value={ingreso.afiliado as string}
+                          displayEmpty
                           onChange={(e) =>
-                            handleChange("local_visita", e.target.value)
+                            handleChange("afiliado", e.target.value)
                           }
                         >
-                          <FormControlLabel
-                            value="LOCAL"
-                            control={<Radio />}
-                            label="Local"
-                          />
-                          <FormControlLabel
-                            value="VISITANTE"
-                            control={<Radio />}
-                            label="Visitante"
-                          />
-                        </RadioGroup>
+                          <MenuItem disabled value="">
+                            [Seleccione un afiliado]
+                          </MenuItem>
+                          {isLoadingAfiliados ? (
+                            <MenuItem>Cargando afiliados...</MenuItem>
+                          ) : afiliados?.length === 0 ? (
+                            <MenuItem disabled={true} value="vaciox">
+                              <strong style={{ color: "red" }}>
+                                No se encontró ningún afiliado. Por favor crea
+                                uno nuevo.
+                              </strong>
+                            </MenuItem>
+                          ) : (
+                            afiliados?.map((afiliado) => {
+                              return (
+                                <MenuItem
+                                  disabled={afiliado.status ? false : true}
+                                  key={afiliado._id}
+                                  value={afiliado._id}
+                                >
+                                  {afiliado.full_name}
+                                </MenuItem>
+                              );
+                            })
+                          )}
+                        </Select>
                       </FormControl>
+                    </Grid>
+                    <Grid item md={12}>
+                      <TextField
+                        fullWidth
+                        value={ingreso.detalle_ingreso}
+                        id="detalle_ingreso"
+                        onChange={(e) =>
+                          handleChange("detalle_ingreso", e.target.value)
+                        }
+                        label="Ingresa detalle del ingreso(opcional)"
+                        autoComplete="off"
+                      />
                     </Grid>
                     <Grid item md={6}>
-                      <FormControl>
-                        <FormLabel id="actividad-row-radio-buttons-group-label">
-                          Se realizó actividad ?
-                        </FormLabel>
-                        <RadioGroup
-                          row
-                          aria-labelledby="actividad-row-radio-buttons-group-label"
-                          name="row-radio-buttons-group"
-                          value={ingreso.realizo_actividad}
-                          onChange={(e) => {
-                            if (e.target.value === "No") {
-                              setIngreso({
-                                ...ingreso,
-                                realizo_actividad: "No",
-                                ingreso_total_actividad: 0,
-                                nombre_actividad: "NINGUNO",
-                              });
-                            } else {
-                              handleChange("realizo_actividad", e.target.value);
-                            }
-                          }}
-                        >
-                          <FormControlLabel
-                            value="Si"
-                            control={<Radio />}
-                            label="Si"
-                          />
-                          <FormControlLabel
-                            value="No"
-                            control={<Radio />}
-                            label="No"
-                          />
-                        </RadioGroup>
-                      </FormControl>
+                      <Button
+                        variant="contained"
+                        //disabled={ingreso. ? false : true}
+                        onClick={handleAddIngresos}
+                      >
+                        Agregar Ingresos del afiliado
+                      </Button>
                     </Grid>
-                    {ingreso.realizo_actividad === "Si" && (
-                      <>
-                        <Grid item md={12}>
-                          <TextField
-                            fullWidth
-                            required
-                            id="nombre-actividad-required"
-                            label="Nombre de actividad"
-                            autoComplete="off"
-                            value={ingreso.nombre_actividad}
-                            onChange={(e) =>
-                              handleChange("nombre_actividad", e.target.value)
-                            }
-                          />
-                        </Grid>
-                        <Grid item md={12}>
-                          <TextField
-                            fullWidth
-                            required
-                            id="total-actividad-required"
-                            label="Ingreso total de actividad"
-                            value={ingreso.ingreso_total_actividad}
-                            inputProps={{
-                              step: "0.01",
-                              min: "0",
-                            }}
-                            type="number"
-                            InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  S/
-                                </InputAdornment>
-                              ),
-                            }}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              const arr = value.split(".");
-                              const decimal = arr.length >= 2 && arr[1];
-                              if (
-                                typeof decimal === "string" &&
-                                decimal.length <= 2
-                              ) {
-                                handleChange(
-                                  "ingreso_total_actividad",
-                                  Number(e.target.value)
-                                );
-                              }
-                              if (
-                                typeof decimal === "boolean" &&
-                                decimal === false
-                              ) {
-                                handleChange(
-                                  "ingreso_total_actividad",
-                                  Number(e.target.value)
-                                );
-                              }
-                            }}
-                            autoComplete="off"
-                          />
-                        </Grid>
-                      </>
-                    )}
-                    <Grid item md={12}>
-                      <TextField
-                        fullWidth
-                        required
-                        id="ingreso-apoyo-required"
-                        label="Ingreso de apoyo de la tribuna"
-                        value={ingreso.ingreso_apoyo_tribuna}
-                        inputProps={{
-                          step: "0.01",
-                          min: "0",
-                        }}
-                        type="number"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">S/</InputAdornment>
-                          ),
-                        }}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          const arr = value.split(".");
-                          const decimal = arr.length >= 2 && arr[1];
-                          if (
-                            typeof decimal === "string" &&
-                            decimal.length <= 2
-                          ) {
-                            handleChange(
-                              "ingreso_apoyo_tribuna",
-                              Number(e.target.value)
-                            );
-                          }
-                          if (
-                            typeof decimal === "boolean" &&
-                            decimal === false
-                          ) {
-                            handleChange(
-                              "ingreso_apoyo_tribuna",
-                              Number(e.target.value)
-                            );
-                          }
-                        }}
-                        autoComplete="off"
-                      />
-                    </Grid>
-                    <Grid item md={12}>
-                      <TextField
-                        fullWidth
-                        required
-                        id="ingreso-dirigentes-required"
-                        label="Ingreso cuota de dirigentes"
-                        value={ingreso.ingreso_cuota_dirigentes}
-                        inputProps={{
-                          step: "0.01",
-                          min: "0",
-                        }}
-                        type="number"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">S/</InputAdornment>
-                          ),
-                        }}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          const arr = value.split(".");
-                          const decimal = arr.length >= 2 && arr[1];
-                          if (
-                            typeof decimal === "string" &&
-                            decimal.length <= 2
-                          ) {
-                            handleChange(
-                              "ingreso_cuota_dirigentes",
-                              Number(e.target.value)
-                            );
-                          }
-                          if (
-                            typeof decimal === "boolean" &&
-                            decimal === false
-                          ) {
-                            handleChange(
-                              "ingreso_cuota_dirigentes",
-                              Number(e.target.value)
-                            );
-                          }
-                        }}
-                        autoComplete="off"
-                      />
-                    </Grid>
-                    <Grid item md={12}>
-                      <TextField
-                        fullWidth
-                        required
-                        id="otros-required"
-                        label="Otros ingresos"
-                        value={ingreso.otros_ingresos}
-                        inputProps={{
-                          step: "0.01",
-                          min: "0",
-                        }}
-                        type="number"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">S/</InputAdornment>
-                          ),
-                        }}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          const arr = value.split(".");
-                          const decimal = arr.length >= 2 && arr[1];
-                          if (
-                            typeof decimal === "string" &&
-                            decimal.length <= 2
-                          ) {
-                            handleChange(
-                              "otros_ingresos",
-                              Number(e.target.value)
-                            );
-                          }
-                          if (
-                            typeof decimal === "boolean" &&
-                            decimal === false
-                          ) {
-                            handleChange(
-                              "otros_ingresos",
-                              Number(e.target.value)
-                            );
-                          }
-                        }}
-                        autoComplete="off"
-                      />
-                    </Grid>
-                    <Grid item md={12}>
-                      <TextField
-                        fullWidth
-                        required
-                        id="ingreso-taquilla-required"
-                        label="Ingreso de taquilla"
-                        value={ingreso.ingreso_taquilla}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">S/</InputAdornment>
-                          ),
-                        }}
-                        inputProps={{
-                          step: "0.01",
-                          min: "0",
-                        }}
-                        type="number"
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          const arr = value.split(".");
-                          const decimal = arr.length >= 2 && arr[1];
-                          if (
-                            typeof decimal === "string" &&
-                            decimal.length <= 2
-                          ) {
-                            handleChange(
-                              "ingreso_taquilla",
-                              Number(e.target.value)
-                            );
-                          }
-                          if (
-                            typeof decimal === "boolean" &&
-                            decimal === false
-                          ) {
-                            handleChange(
-                              "ingreso_taquilla",
-                              Number(e.target.value)
-                            );
-                          }
-                        }}
-                        autoComplete="off"
-                      />
-                    </Grid>
+                    {itemsIngresos.map((item, i) => {
+                      return (
+                        <IngresoItem
+                          key={i + 1}
+                          item={item}
+                          handleRemoveGasto={handleRemoveIngreso}
+                          setItemsIngresos={setItemsIngresos}
+                          itemsIngresos={itemsIngresos}
+                        />
+                      );
+                    })}
+
                     <Grid item md={12}>
                       <div
                         style={{
@@ -655,13 +430,7 @@ const IngresoEdit = ({ handleClose, open, entityId }: IModal) => {
                         <h1>Total:</h1>
                         <h3 style={{ color: "green" }}>
                           S/
-                          {formatter.format(
-                            ingreso.ingreso_total_actividad +
-                              ingreso.ingreso_apoyo_tribuna +
-                              ingreso.ingreso_cuota_dirigentes +
-                              ingreso.otros_ingresos +
-                              ingreso.ingreso_taquilla
-                          )}
+                          {formatter.format(memoTotal)}
                         </h3>
                       </div>
                     </Grid>

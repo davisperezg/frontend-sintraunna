@@ -124,22 +124,22 @@ export const columnResources = [
 
 export const columnIngreso = [
   {
+    Header: "#",
+    accessor: "index",
+  },
+  {
     Header: "Fecha de ingreso",
     accessor: "fecha",
     Cell: ({ value }: { value: any }) =>
       formatDate(new Date(String(value)), false),
   },
   {
-    Header: "Partido VS",
-    accessor: "partido_vs",
+    Header: "Detalle de ingreso",
+    accessor: "detalle_ingreso",
   },
   {
-    Header: "L / V",
-    accessor: "local_visita",
-  },
-  {
-    Header: "Fase copa Perú",
-    accessor: "fase_copaPeru",
+    Header: "Afiliado",
+    accessor: "afiliado",
   },
   {
     Header: "Estado",
@@ -164,16 +164,108 @@ export const columnEgreso = [
       formatDate(new Date(String(value)), false),
   },
   {
-    Header: "Partido VS",
-    accessor: "partido_vs",
+    Header: "Nombre destinatario",
+    accessor: "nombre_destinatario",
   },
   {
-    Header: "L / V",
-    accessor: "local_visita",
+    Header: "Detalle del egreso",
+    accessor: "detalle_egreso",
   },
   {
-    Header: "Fase copa Perú",
-    accessor: "fase_copaPeru",
+    Header: "Estado",
+    accessor: "status",
+    Cell: ({ value }: { value: boolean }) => (
+      <Stack direction="row" spacing={1} style={{ justifyContent: "center" }}>
+        {value ? (
+          <Chip label="Activo" color="success" />
+        ) : (
+          <Chip label="Inactivo" color="error" />
+        )}
+      </Stack>
+    ),
+  },
+];
+
+export const columnAfiliado = [
+  {
+    Header: "#",
+    accessor: "index",
+  },
+  {
+    Header: "DNI",
+    accessor: "dni",
+  },
+  {
+    Header: "Afiliado",
+    accessor: "full_name",
+  },
+  {
+    Header: "Proyecto",
+    accessor: "proyecto",
+  },
+  {
+    Header: "Puesto de trabajo",
+    accessor: "puesto_trabajo",
+  },
+  {
+    Header: "Situación del afiliado",
+    accessor: "situacion_afiliado",
+  },
+  {
+    Header: "Estado",
+    accessor: "status",
+    Cell: ({ value }: { value: boolean }) => (
+      <Stack direction="row" spacing={1} style={{ justifyContent: "center" }}>
+        {value ? (
+          <Chip label="Activo" color="success" />
+        ) : (
+          <Chip label="Inactivo" color="error" />
+        )}
+      </Stack>
+    ),
+  },
+];
+
+export const columnGrupo = [
+  {
+    Header: "#",
+    accessor: "index",
+  },
+  {
+    Header: "Grupo",
+    accessor: "nombre",
+  },
+  {
+    Header: "Descripción",
+    accessor: "descripcion",
+  },
+  {
+    Header: "Estado",
+    accessor: "status",
+    Cell: ({ value }: { value: boolean }) => (
+      <Stack direction="row" spacing={1} style={{ justifyContent: "center" }}>
+        {value ? (
+          <Chip label="Activo" color="success" />
+        ) : (
+          <Chip label="Inactivo" color="error" />
+        )}
+      </Stack>
+    ),
+  },
+];
+
+export const columnPago = [
+  {
+    Header: "#",
+    accessor: "index",
+  },
+  {
+    Header: "Concepto",
+    accessor: "concepto",
+  },
+  {
+    Header: "Importe",
+    accessor: "importe",
   },
   {
     Header: "Estado",

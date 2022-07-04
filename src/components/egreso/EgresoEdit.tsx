@@ -7,27 +7,14 @@ import {
   Box,
   Tab,
   Tabs,
-  FormControl,
-  FormLabel,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
   Dialog,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
   DialogTitle,
   DialogContentText,
 } from "@mui/material";
 import { IModal } from "../../interface/Modal";
 import { BootstrapDialog, BootstrapDialogTitle } from "../modal";
 import TabPanel from "../Tab/Index";
-import {
-  a11yProps,
-  formatDate,
-  formatter,
-} from "../../utils/helpers/functions";
+import { a11yProps, formatter } from "../../utils/helpers/functions";
 import { SyntheticEvent, useCallback, useEffect, useState } from "react";
 import { useEgreso, useMutateEgreso } from "../hooks/useEgreso";
 import { Egreso } from "../../interface/Egreso";
@@ -37,15 +24,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import EgresoItemGasto from "./EgresoItemGasto";
-import CloseIcon from "@mui/icons-material/Close";
-import { Table } from "../../views/IndexStyle";
-import { Transition } from "../General/ComponentsIndex";
 
 const initialEgreso: Egreso = {
   fecha: new Date(),
-  partido_vs: "",
-  local_visita: "Local",
-  fase_copaPeru: "",
+  nombre_destinatario: "",
+  detalle_egreso: "Local",
   gastos: [],
 };
 
@@ -57,7 +40,6 @@ const EgresoEdit = ({ handleClose, open, entityId }: IModal) => {
   const { mutateAsync, isLoading: isLoadingMutate } = useMutateEgreso();
   const [itemsGasto, setItemsGasto] = useState<any[]>([]);
   const [gasto, setGasto] = useState<number[]>([]);
-  const [openFull, setOpenFull] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [motivo, setMotivo] = useState("");
 
@@ -76,14 +58,7 @@ const EgresoEdit = ({ handleClose, open, entityId }: IModal) => {
     setEgreso(initialEgreso);
     setGasto([]);
     setItemsGasto([]);
-  };
-
-  const handlePrevia = () => {
-    setOpenFull(true);
-  };
-
-  const handleCloseFull = () => {
-    setOpenFull(false);
+    setMotivo("");
   };
 
   const handleChangeTab = (event: SyntheticEvent, newValue: number) => {
@@ -93,7 +68,6 @@ const EgresoEdit = ({ handleClose, open, entityId }: IModal) => {
   const closeModal = () => {
     handleClose();
     clear();
-    handleCloseFull();
   };
 
   const handleOk = async () => {
@@ -103,11 +77,11 @@ const EgresoEdit = ({ handleClose, open, entityId }: IModal) => {
           ...egreso,
           fecha: valueDate,
           gastos: itemsGasto,
-          motivo_editacion: motivo,
+          motivo: motivo,
         },
         idUpdateData: entityId,
       });
-      toast.success("Liquidación actualizada. !");
+      toast.success("Egreso actualizado. !");
       closeModal();
     } catch (e: any) {
       const error: ErrorServer = JSON.parse(e.request.response);
@@ -123,14 +97,13 @@ const EgresoEdit = ({ handleClose, open, entityId }: IModal) => {
     setEgreso({ ...egreso, [prop]: value });
   };
 
-  const loadEgreso = useCallback(() => {
+  const loadEgreso = useCallback(async () => {
     if (data)
       setEgreso({
         _id: data?._id,
         fecha: data?.fecha,
-        partido_vs: data?.partido_vs,
-        fase_copaPeru: data?.fase_copaPeru,
-        local_visita: data?.local_visita,
+        nombre_destinatario: data?.nombre_destinatario,
+        detalle_egreso: data?.detalle_egreso,
         gastos: data?.gastos,
       });
 
@@ -182,7 +155,7 @@ const EgresoEdit = ({ handleClose, open, entityId }: IModal) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Editar EGRESO?"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"Editar"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             ¿Esta seguro que desea editar el egreso?
@@ -209,85 +182,6 @@ const EgresoEdit = ({ handleClose, open, entityId }: IModal) => {
         </DialogActions>
       </Dialog>
 
-      <Dialog
-        fullScreen
-        open={openFull}
-        onClose={handleCloseFull}
-        TransitionComponent={Transition}
-      >
-        <AppBar sx={{ position: "relative" }}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleCloseFull}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              VISTA PREVIA DE LIQUIDACION DE PLANILLA - SALIDA(EDITANDO)
-            </Typography>
-            <Button autoFocus color="inherit" onClick={handleClickEdit}>
-              Guardar
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <div style={{ display: "flex", flexDirection: "column", padding: 24 }}>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <strong>Fecha de egreso:</strong>&nbsp;&nbsp;
-            <label>{formatDate(new Date(String(valueDate)), false)}</label>
-          </div>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <strong>Fase de copa Perú:</strong>&nbsp;&nbsp;
-            <label>{egreso?.fase_copaPeru}</label>
-          </div>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <strong>Partido VS:</strong>&nbsp;&nbsp;
-            <label>{egreso?.partido_vs}</label>
-          </div>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <strong>El encuentro se jugó de:</strong>&nbsp;&nbsp;
-            <label>{egreso?.local_visita}</label>
-          </div>
-          <br />
-          <br />
-          <Table style={{ padding: 0 }}>
-            <table>
-              <thead>
-                <tr>
-                  <th>Nro</th>
-                  <th>Detalle de gasto</th>
-                  <th>Monto</th>
-                </tr>
-              </thead>
-              <tbody>
-                {itemsGasto.map((item) => (
-                  <tr key={item.nro}>
-                    <td>{item.nro}</td>
-                    <td>{item.gasto}</td>
-                    <td>S/{formatter.format(item.monto)}</td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot style={{ backgroundColor: "red", color: "#fff" }}>
-                <tr>
-                  <td colSpan={2}>Total</td>
-                  <td>
-                    S/
-                    {formatter.format(
-                      itemsGasto.reduce((a, b) => {
-                        return Number(a) + Number(b.monto);
-                      }, 0)
-                    )}
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          </Table>
-        </div>
-      </Dialog>
-
       <BootstrapDialog
         onClose={closeModal}
         aria-labelledby="customized-dialog-title"
@@ -304,8 +198,7 @@ const EgresoEdit = ({ handleClose, open, entityId }: IModal) => {
               id="customized-dialog-title"
               onClose={closeModal}
             >
-              LIQUIDACIÓN EN SALIDA({egreso.local_visita}) REAL FUJIMORI VS{" "}
-              {egreso.partido_vs}
+              EGRESO
             </BootstrapDialogTitle>
             <DialogContent dividers>
               {/* {isErrorListModules && (
@@ -342,55 +235,28 @@ const EgresoEdit = ({ handleClose, open, entityId }: IModal) => {
                       <TextField
                         fullWidth
                         required
-                        value={egreso.partido_vs}
-                        id="partidovs-required"
+                        value={egreso.nombre_destinatario}
+                        id="nombre_destinatario"
                         onChange={(e) =>
-                          handleChange("partido_vs", e.target.value)
+                          handleChange("nombre_destinatario", e.target.value)
                         }
-                        label="¿El partido se jugó con?"
+                        label="Nombre del destinatario"
                         autoComplete="off"
                       />
                     </Grid>
                     <Grid item md={12}>
                       <TextField
                         fullWidth
-                        required
-                        value={egreso.fase_copaPeru}
-                        id="fasecopa-required"
+                        value={egreso.detalle_egreso}
+                        id="detalle_egreso"
                         onChange={(e) =>
-                          handleChange("fase_copaPeru", e.target.value)
+                          handleChange("detalle_egreso", e.target.value)
                         }
-                        label="Fase de copa Perú"
+                        label="Detalle de egreso(opcional)"
                         autoComplete="off"
                       />
                     </Grid>
-                    <Grid item md={6}>
-                      <FormControl>
-                        <FormLabel id="lv-row-radio-buttons-group-label">
-                          Modo de juego
-                        </FormLabel>
-                        <RadioGroup
-                          row
-                          aria-labelledby="lv-row-radio-buttons-group-label"
-                          name="row-radio-buttons-group"
-                          value={egreso.local_visita}
-                          onChange={(e) =>
-                            handleChange("local_visita", e.target.value)
-                          }
-                        >
-                          <FormControlLabel
-                            value="LOCAL"
-                            control={<Radio />}
-                            label="Local"
-                          />
-                          <FormControlLabel
-                            value="VISITANTE"
-                            control={<Radio />}
-                            label="Visitante"
-                          />
-                        </RadioGroup>
-                      </FormControl>
-                    </Grid>
+
                     <Grid item md={12}>
                       <Button variant="contained" onClick={handleAddGasto}>
                         Agregar gasto
@@ -434,8 +300,8 @@ const EgresoEdit = ({ handleClose, open, entityId }: IModal) => {
               <Button variant="outlined" onClick={closeModal}>
                 Cancelar
               </Button>
-              <Button variant="contained" autoFocus onClick={handlePrevia}>
-                Vista Previa
+              <Button variant="contained" autoFocus onClick={handleClickEdit}>
+                OK
               </Button>
             </DialogActions>
           </>

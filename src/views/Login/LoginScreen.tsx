@@ -74,9 +74,9 @@ const LoginScreen = () => {
 
   return (
     <BodyLogin>
-      <Img>
+      {/* <Img>
         <img src={logo} alt="Logo" />;
-      </Img>
+      </Img> */}
       <MyLogin>
         <FormLogin onSubmit={onSubmit}>
           <ContentTitle>
@@ -114,7 +114,7 @@ const LoginScreen = () => {
             />
           </FormControl>
           <Box sx={{ marginY: 1 }} />
-          <Button variant="contained" type="submit">
+          <Button color="error" variant="contained" type="submit">
             INGRESAR
           </Button>
         </FormLogin>

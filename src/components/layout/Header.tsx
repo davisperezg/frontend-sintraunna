@@ -11,7 +11,7 @@ import {
 import { MouseEvent, useState, useContext } from "react";
 import { stringAvatar } from "../../utils/avatarUtil";
 import { Head, Logo, Navigation, User } from "./IndexStyle";
-import logo from "../../assets/logo_club.jpg";
+import logo from "../../assets/LogoSintraunnaMod.jpeg";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../stateManagement/context";
 
@@ -34,8 +34,8 @@ const Header = () => {
   return (
     <Head>
       <Logo>
-        {/* <img src={logo} alt="Logo" width={120} height={70} /> */}
-        <label>REAL FUJIMORI</label>
+        <img src={logo} alt="Logo" width={200} height={50} />
+        {/* <label>SINTRAUNNA</label> */}
       </Logo>
       <Navigation>
         <User>

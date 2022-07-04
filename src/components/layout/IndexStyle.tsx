@@ -1,10 +1,11 @@
 import styled from "styled-components";
 
 export const Head = styled.div`
-  background-color: #2b56ab;
+  background-color: transparent;
   width: 100%;
   height: 75px;
   display: flex;
+  border-bottom: 3px solid #e50a17;
 `;
 
 export const Logo = styled.div`
@@ -38,8 +39,9 @@ export const Body = styled.div`
   width: 100%;
 `;
 
+//rgb(33, 33, 33)
 export const Foote = styled.div`
-  background-color: rgb(33, 33, 33);
+  background-color: #e50a17;
   width: 100%;
   height: 64px;
   position: absolute;
@@ -48,6 +50,7 @@ export const Foote = styled.div`
   color: #fff;
   font-size: 12px;
   display: flex;
+  font-weight: bold;
   justify-content: center;
   align-items: center;
 `;

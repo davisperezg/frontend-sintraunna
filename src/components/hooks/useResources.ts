@@ -46,10 +46,8 @@ interface ICreateParamsUser {
 
 export const useAccess = () => {
   const { user } = useContext(AuthContext);
-  const { role } = user;
-
-  return useQuery([KEY + "_your_permissions", role._id], () =>
-    getResourceByRol(role._id)
+  return useQuery([KEY + "_your_permissions", user._id], () =>
+    getResourceByUser(user._id)
   );
 };
 

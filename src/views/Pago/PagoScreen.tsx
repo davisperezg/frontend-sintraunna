@@ -1,17 +1,20 @@
 import { Button } from "@mui/material";
 import { useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import AfiliadoCreate from "../../components/afiliados/AfiliadoCreate";
+import AfiliadoEdit from "../../components/afiliados/AfiliadoEdit";
+import AfiliadoList from "../../components/afiliados/AfiliadoList";
 import MyBreadcrumbs from "../../components/breadcrumbs/Index";
-import EgresoCreate from "../../components/egreso/EgresoCreate";
-import EgresoEdit from "../../components/egreso/EgresoEdit";
-import EgresoList from "../../components/egreso/EgresoList";
+import { useAfiliados } from "../../components/hooks/useAfiliados";
 import { useBreadcrumbs } from "../../components/hooks/useBreadcrumbs";
-import { useEgresos } from "../../components/hooks/useEgreso";
+import { usePagos } from "../../components/hooks/usePagos";
 import { useAccess } from "../../components/hooks/useResources";
-import { columnEgreso } from "../../consts/columns";
+import PagoCreate from "../../components/Pago/PagoCreate";
+import PagoEdit from "../../components/Pago/PagoEdit";
+import PagoList from "../../components/Pago/PagoList";
+import { columnPago } from "../../consts/columns";
 import { Options } from "../IndexStyle";
 
-const EgresoScreen = () => {
+const PagoScreen = () => {
   const [
     idModule,
     idMenu,
@@ -22,25 +25,23 @@ const EgresoScreen = () => {
     errorModule,
   ] = useBreadcrumbs();
   const {
-    data: egresos,
+    data: pagos,
     isLoading: isLoadingEgresos,
     isError: isErrorListEgresos,
     error: errorListEgresos,
-  } = useEgresos();
-
-  const [open, setOpen] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
-
-  const handleClickOpen = () => setOpen(true);
-  const [egresoId, setId] = useState<string>("");
-  const navigate = useNavigate();
-  const location = useLocation();
+  } = usePagos();
   const {
     data: dataAccess,
     isLoading: isLoadingAccess,
     isError: isErrorAccess,
     error: errorAccess,
   } = useAccess();
+
+  const [open, setOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+
+  const handleClickOpen = () => setOpen(true);
+  const [afiliadoId, setId] = useState<string>("");
 
   const handleClose = () => setOpen(false);
 
@@ -51,16 +52,12 @@ const EgresoScreen = () => {
 
   const handleCloseEdit = () => setOpenEdit(false);
 
-  const handleClickDetails = (id: string) => {
-    navigate(`${location.pathname}/${id}`);
-  };
+  const dataPagos = useMemo(() => {
+    const data = pagos || [];
+    return data;
+  }, [pagos]);
 
-  const dataEgresos = useMemo(() => {
-    const data = egresos;
-    return data || [];
-  }, [egresos]);
-
-  const columns = useMemo(() => columnEgreso, []);
+  const columns = useMemo(() => columnPago, []);
 
   return (
     <>
@@ -71,7 +68,7 @@ const EgresoScreen = () => {
         module={module}
         isLoadingModule={isLoadingModule}
         isErrorModule={isErrorModule}
-        nameMenu="Egreso"
+        nameMenu="Pago"
       />
 
       <Options>
@@ -79,12 +76,12 @@ const EgresoScreen = () => {
           "Verificando permisos..."
         ) : isErrorAccess ? (
           "Ha ocurrido un error por favor comunicarse al soporte"
-        ) : dataAccess.some((a: any) => a === "canCreate_egresos") ? (
+        ) : dataAccess.some((a: any) => a === "canCreate_pagos") ? (
           <Button variant="outlined" onClick={handleClickOpen}>
-            Crear Egreso
+            Crear Pago
           </Button>
         ) : (
-          "Usted no tiene el permiso para crear egresos"
+          "Usted no tiene el permiso para crear pagos"
         )}
       </Options>
 
@@ -92,28 +89,27 @@ const EgresoScreen = () => {
         "Verificando permisos..."
       ) : isErrorAccess ? (
         "Ha ocurrido un error por favor comunicarse al soporte"
-      ) : dataAccess.some((a: any) => a === "canRead_egresos") ? (
-        <EgresoList
-          data={dataEgresos}
+      ) : dataAccess.some((a: any) => a === "canRead_pagos") ? (
+        <PagoList
+          data={dataPagos}
           columns={columns}
           handleClickOpen={handleClickOpenEdit}
-          handleClickDetails={handleClickDetails}
         />
       ) : (
-        "Usted no tiene el permiso para este listar egresos"
+        "Usted no tiene el permiso para este listar pagos"
       )}
 
-      <EgresoCreate handleClose={handleClose} open={open} />
+      <PagoCreate handleClose={handleClose} open={open} />
 
       {openEdit && (
-        <EgresoEdit
+        <PagoEdit
           handleClose={handleCloseEdit}
           open={openEdit}
-          entityId={egresoId}
+          entityId={afiliadoId}
         />
       )}
     </>
   );
 };
 
-export default EgresoScreen;
+export default PagoScreen;
