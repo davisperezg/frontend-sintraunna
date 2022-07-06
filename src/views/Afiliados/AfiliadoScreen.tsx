@@ -72,7 +72,7 @@ const AfiliadoScreen = () => {
           "Verificando permisos..."
         ) : isErrorAccess ? (
           "Ha ocurrido un error por favor comunicarse al soporte"
-        ) : dataAccess.some((a: any) => a === "canCreate_afiliados") ? (
+        ) : dataAccess?.some((a: any) => a === "canCreate_afiliados") ? (
           <Button variant="outlined" onClick={handleClickOpen}>
             Crear Afiliado
           </Button>
@@ -85,7 +85,7 @@ const AfiliadoScreen = () => {
         "Verificando permisos..."
       ) : isErrorAccess ? (
         "Ha ocurrido un error por favor comunicarse al soporte"
-      ) : dataAccess.some((a: any) => a === "canRead_afiliados") ? (
+      ) : dataAccess?.some((a: any) => a === "canRead_afiliados") ? (
         <AfiliadoList
           data={dataAfiliados}
           columns={columns}

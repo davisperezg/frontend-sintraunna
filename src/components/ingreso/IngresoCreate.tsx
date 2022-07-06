@@ -335,6 +335,7 @@ const IngresoCreate = ({ handleClose, open }: IModal) => {
                     onChange={(e) =>
                       handleChange("detalle_ingreso", e.target.value)
                     }
+                    variant="outlined"
                     label="Ingresa detalle del ingreso(opcional)"
                     autoComplete="off"
                   />

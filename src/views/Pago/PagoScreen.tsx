@@ -76,7 +76,7 @@ const PagoScreen = () => {
           "Verificando permisos..."
         ) : isErrorAccess ? (
           "Ha ocurrido un error por favor comunicarse al soporte"
-        ) : dataAccess.some((a: any) => a === "canCreate_pagos") ? (
+        ) : dataAccess?.some((a: any) => a === "canCreate_pagos") ? (
           <Button variant="outlined" onClick={handleClickOpen}>
             Crear Pago
           </Button>
@@ -89,7 +89,7 @@ const PagoScreen = () => {
         "Verificando permisos..."
       ) : isErrorAccess ? (
         "Ha ocurrido un error por favor comunicarse al soporte"
-      ) : dataAccess.some((a: any) => a === "canRead_pagos") ? (
+      ) : dataAccess?.some((a: any) => a === "canRead_pagos") ? (
         <PagoList
           data={dataPagos}
           columns={columns}

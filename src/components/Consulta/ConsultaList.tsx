@@ -32,7 +32,7 @@ const ConsultaList = ({ columns, data }: ITable) => {
                   return (
                     <td
                       style={{
-                        display: cell.column.id === "pagos" ? "flex" : "",
+                        whiteSpace: "nowrap",
                       }}
                       {...cell.getCellProps()}
                     >

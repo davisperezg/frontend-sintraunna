@@ -79,13 +79,13 @@ const ConsultaXPago = () => {
   };
 
   const monto = useMemo(() => {
-    const calc = (data as any).map((a: any) => {
-      return a.pagos.reduce((prev: any, curr: any) => {
+    const calc = (data as any)?.map((a: any) => {
+      return a.pagos?.reduce((prev: any, curr: any) => {
         return prev + curr.importe;
       }, 0);
     });
 
-    return calc;
+    return calc || [0];
   }, [data]);
 
   return (
@@ -103,7 +103,7 @@ const ConsultaXPago = () => {
         "Verificando permisos..."
       ) : isErrorAccess ? (
         "Ha ocurrido un error por favor comunicarse con soporte"
-      ) : dataAccess.some((a: any) => a === "canRead_consultaXpago") ? (
+      ) : dataAccess?.some((a: any) => a === "canRead_consultaXpago") ? (
         <>
           <OptionsConsultaXpago>
             <div>
@@ -118,11 +118,15 @@ const ConsultaXPago = () => {
                   label="[Seleccione un pago]"
                   onChange={handleChange}
                 >
-                  {pagos?.map((a) => (
-                    <MenuItem key={a._id} value={a._id}>
-                      {a.concepto}
-                    </MenuItem>
-                  ))}
+                  {isLoadingPagos ? (
+                    <MenuItem>Cargando pagos...</MenuItem>
+                  ) : (
+                    pagos?.map((a, i: number) => (
+                      <MenuItem key={i + 1} value={a._id}>
+                        {a.concepto}
+                      </MenuItem>
+                    ))
+                  )}
                 </Select>
               </FormControl>
 
@@ -130,6 +134,7 @@ const ConsultaXPago = () => {
                 style={{ marginLeft: 10 }}
                 onClick={goConsult}
                 color="error"
+                disabled={pago !== "" ? false : true}
                 variant="contained"
               >
                 Consultar

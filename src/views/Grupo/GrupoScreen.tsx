@@ -72,7 +72,7 @@ const GrupoScreen = () => {
           "Verificando permisos..."
         ) : isErrorAccess ? (
           "Ha ocurrido un error por favor comunicarse al soporte"
-        ) : dataAccess.some((a: any) => a === "canCreate_grupos") ? (
+        ) : dataAccess?.some((a: any) => a === "canCreate_grupos") ? (
           <Button variant="outlined" onClick={handleClickOpen}>
             Crear Grupo
           </Button>
@@ -85,7 +85,7 @@ const GrupoScreen = () => {
         "Verificando permisos..."
       ) : isErrorAccess ? (
         "Ha ocurrido un error por favor comunicarse al soporte"
-      ) : dataAccess.some((a: any) => a === "canRead_grupos") ? (
+      ) : dataAccess?.some((a: any) => a === "canRead_grupos") ? (
         <GrupoList
           data={dataGrupos}
           columns={columns}

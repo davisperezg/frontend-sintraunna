@@ -7,6 +7,10 @@ export const OptionsConsultaGeneral = styled.div`
   padding: 10px;
 `;
 
+export const ContentSearch = styled.div`
+  padding: 10px;
+`;
+
 export const OptionsConsultaXpago = styled.div`
   display: flex;
   justify-content: space-between;

@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { TextField } from "@mui/material";
+import { useMemo, useState } from "react";
 import MyBreadcrumbs from "../../components/breadcrumbs/Index";
 import ConsultaList from "../../components/Consulta/ConsultaList";
 import { useBreadcrumbs } from "../../components/hooks/useBreadcrumbs";
@@ -6,7 +7,7 @@ import { useConsultaGeneral } from "../../components/hooks/useConsulta";
 import { useAccess } from "../../components/hooks/useResources";
 import { columnConsultaPagos } from "../../consts/columns";
 import { formatter } from "../../utils/helpers/functions";
-import { OptionsConsultaGeneral } from "./ConsultaStyle";
+import { ContentSearch, OptionsConsultaGeneral } from "./ConsultaStyle";
 
 const ConsultaGeneral = () => {
   const [
@@ -30,9 +31,24 @@ const ConsultaGeneral = () => {
     isError: isErrorPagos,
     error: errorPagos,
   } = useConsultaGeneral();
+  const [buscar, setBuscar] = useState("");
 
-  const data = useMemo(() => dataPagos || [], [dataPagos]);
+  const data = useMemo(() => {
+    let consultFiltered = dataPagos;
+
+    if (buscar !== "") {
+      consultFiltered = (dataPagos as any)?.filter((a: any) => {
+        return String(a.afiliado).toLowerCase().includes(buscar.toLowerCase());
+      });
+    }
+
+    return consultFiltered || [];
+  }, [dataPagos, buscar]);
   const columns = useMemo(() => columnConsultaPagos, []);
+
+  const handleSearch = (e: any) => {
+    setBuscar(e.target.value);
+  };
 
   const print = () => {
     const prtContent = document.getElementById("content");
@@ -49,13 +65,13 @@ const ConsultaGeneral = () => {
   };
 
   const monto = useMemo(() => {
-    const calc = (data as any).map((a: any) => {
-      return a.pagos.reduce((prev: any, curr: any) => {
+    const calc = (data as any)?.map((a: any) => {
+      return a.pagos?.reduce((prev: any, curr: any) => {
         return prev + curr.importe;
       }, 0);
     });
 
-    return calc;
+    return calc || [0];
   }, [data]);
 
   return (
@@ -73,8 +89,17 @@ const ConsultaGeneral = () => {
         "Verificando permisos..."
       ) : isErrorAccess ? (
         "Ha ocurrido un error por favor comunicarse con soporte"
-      ) : dataAccess.some((a: any) => a === "canRead_consultaGeneral") ? (
+      ) : dataAccess?.some((a: any) => a === "canRead_consultaGeneral") ? (
         <>
+          <ContentSearch>
+            <TextField
+              id="outlined-name"
+              label="Buscar afiliado"
+              value={buscar}
+              onChange={handleSearch}
+              fullWidth
+            />
+          </ContentSearch>
           <OptionsConsultaGeneral>
             <button onClick={print}>Imprimir</button>
           </OptionsConsultaGeneral>
@@ -86,7 +111,7 @@ const ConsultaGeneral = () => {
                 <strong>
                   S/{" "}
                   {formatter.format(
-                    monto.reduce((prev: any, curr: any) => prev + curr, 0)
+                    monto?.reduce((prev: any, curr: any) => prev + curr, 0)
                   )}
                 </strong>
               </label>

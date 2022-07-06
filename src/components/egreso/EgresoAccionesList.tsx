@@ -202,79 +202,63 @@ const EgresoAccionsList = ({ ...rest }) => {
         open={open}
         onClose={handleClose}
       >
-        {rest.row.status && (
-          <>
-            {isLoadingAccess
-              ? "Verificando permisos..."
-              : isErrorAccess
-              ? "Ha ocurrido un error por favor comunicarse al soporte"
-              : dataAccess.some((a: any) => a === "canEdit_egresos") && (
-                  <MenuItem
-                    onClick={() => openEdit(rest.row._id)}
-                    disableRipple
-                  >
-                    Editar
-                  </MenuItem>
-                )}
-          </>
-        )}
-        {
-          <>
-            {isLoadingAccess
-              ? "Verificando permisos..."
-              : isErrorAccess
-              ? "Ha ocurrido un error por favor comunicarse al soporte"
-              : dataAccess.some(
-                  (a: any) =>
-                    a === "canDelete_egresos" || a === "canRestore_egresos"
-                ) && (
-                  <>
-                    <MenuItem
-                      onClick={() => {
-                        if (
-                          dataAccess.some((a: any) => a === "canDelete_egresos")
-                        ) {
-                          if (rest.row.status) {
-                            return handleClickOpenAnular();
-                          }
-                        }
+        {rest.row.status &&
+          (isLoadingAccess
+            ? "Verificando permisos..."
+            : isErrorAccess
+            ? "Ha ocurrido un error por favor comunicarse al soporte"
+            : dataAccess?.some((a: any) => a === "canEdit_egresos") && (
+                <MenuItem onClick={() => openEdit(rest.row._id)} disableRipple>
+                  Editar
+                </MenuItem>
+              ))}
 
-                        if (
-                          dataAccess.some(
-                            (a: any) => a === "canRestore_egresos"
-                          )
-                        ) {
-                          if (!rest.row.status) {
-                            return handleClickRestore();
-                          }
-                        }
-                      }}
-                      disableRipple
-                    >
-                      {rest.row.status ? (
-                        isLoadingDelete ? (
-                          "Anulando..."
-                        ) : (
-                          <>
-                            {dataAccess.some(
-                              (a: any) => a === "canDelete_egresos"
-                            ) && "Anular"}
-                          </>
-                        )
-                      ) : isLoadingRestore ? (
-                        "Restaurando..."
-                      ) : (
-                        <>
-                          {dataAccess.some(
-                            (a: any) => a === "canRestore_egresos"
-                          ) && "Restaurar"}
-                        </>
-                      )}
-                    </MenuItem>
+        {isLoadingAccess
+          ? "Verificando permisos..."
+          : isErrorAccess
+          ? "Ha ocurrido un error por favor comunicarse al soporte"
+          : dataAccess?.some(
+              (a: any) =>
+                a === "canDelete_egresos" || a === "canRestore_egresos"
+            ) && (
+              <MenuItem
+                onClick={() => {
+                  if (dataAccess?.some((a: any) => a === "canDelete_egresos")) {
+                    if (rest.row.status) {
+                      return handleClickOpenAnular();
+                    }
+                  }
+
+                  if (
+                    dataAccess?.some((a: any) => a === "canRestore_egresos")
+                  ) {
+                    if (!rest.row.status) {
+                      return handleClickRestore();
+                    }
+                  }
+                }}
+                disableRipple
+              >
+                {rest.row.status ? (
+                  isLoadingDelete ? (
+                    "Anulando..."
+                  ) : (
+                    <>
+                      {dataAccess?.some(
+                        (a: any) => a === "canDelete_egresos"
+                      ) && "Anular"}
+                    </>
+                  )
+                ) : isLoadingRestore ? (
+                  "Restaurando..."
+                ) : (
+                  <>
+                    {dataAccess?.some((a: any) => a === "canRestore_egresos") &&
+                      "Restaurar"}
                   </>
                 )}
-          </>
-        }
+              </MenuItem>
+            )}
 
         {/* <MenuItem onClick={() => openDetails(rest.row._id)} disableRipple>
           Más detalle

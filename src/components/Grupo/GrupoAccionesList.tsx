@@ -165,77 +165,58 @@ const GrupoAccionsList = ({ ...rest }) => {
         open={open}
         onClose={handleClose}
       >
-        {rest.row.status && (
-          <>
-            {isLoadingAccess
-              ? "Verificando permisos..."
-              : isErrorAccess
-              ? "Ha ocurrido un error por favor comunicarse al soporte"
-              : dataAccess.some((a: any) => a === "canEdit_grupos") && (
-                  <MenuItem
-                    onClick={() => openEdit(rest.row._id)}
-                    disableRipple
-                  >
-                    Editar
-                  </MenuItem>
-                )}
-          </>
-        )}
-        {
-          <>
-            {isLoadingAccess
-              ? "Verificando permisos..."
-              : isErrorAccess
-              ? "Ha ocurrido un error por favor comunicarse al soporte"
-              : dataAccess.some(
-                  (a: any) =>
-                    a === "canDelete_grupos" || a === "canRestore_grupos"
-                ) && (
-                  <>
-                    <MenuItem
-                      onClick={() => {
-                        if (
-                          dataAccess.some((a: any) => a === "canDelete_grupos")
-                        ) {
-                          if (rest.row.status) {
-                            return handleClickOpenAnular();
-                          }
-                        }
+        {rest.row.status &&
+          (isLoadingAccess
+            ? "Verificando permisos..."
+            : isErrorAccess
+            ? "Ha ocurrido un error por favor comunicarse al soporte"
+            : dataAccess?.some((a: any) => a === "canEdit_grupos") && (
+                <MenuItem onClick={() => openEdit(rest.row._id)} disableRipple>
+                  Editar
+                </MenuItem>
+              ))}
+        {isLoadingAccess
+          ? "Verificando permisos..."
+          : isErrorAccess
+          ? "Ha ocurrido un error por favor comunicarse al soporte"
+          : dataAccess?.some(
+              (a: any) => a === "canDelete_grupos" || a === "canRestore_grupos"
+            ) && (
+              <MenuItem
+                onClick={() => {
+                  if (dataAccess?.some((a: any) => a === "canDelete_grupos")) {
+                    if (rest.row.status) {
+                      return handleClickOpenAnular();
+                    }
+                  }
 
-                        if (
-                          dataAccess.some((a: any) => a === "canRestore_grupos")
-                        ) {
-                          if (!rest.row.status) {
-                            return handleClickRestore();
-                          }
-                        }
-                      }}
-                      disableRipple
-                    >
-                      {rest.row.status ? (
-                        isLoadingDelete ? (
-                          "Eliminando..."
-                        ) : (
-                          <>
-                            {dataAccess.some(
-                              (a: any) => a === "canDelete_grupos"
-                            ) && "Eliminar"}
-                          </>
-                        )
-                      ) : isLoadingRestore ? (
-                        "Restaurando..."
-                      ) : (
-                        <>
-                          {dataAccess.some(
-                            (a: any) => a === "canRestore_grupos"
-                          ) && "Restaurar"}
-                        </>
-                      )}
-                    </MenuItem>
+                  if (dataAccess?.some((a: any) => a === "canRestore_grupos")) {
+                    if (!rest.row.status) {
+                      return handleClickRestore();
+                    }
+                  }
+                }}
+                disableRipple
+              >
+                {rest.row.status ? (
+                  isLoadingDelete ? (
+                    "Eliminando..."
+                  ) : (
+                    <>
+                      {dataAccess?.some((a: any) => a === "canDelete_grupos") &&
+                        "Eliminar"}
+                    </>
+                  )
+                ) : isLoadingRestore ? (
+                  "Restaurando..."
+                ) : (
+                  <>
+                    {dataAccess?.some((a: any) => a === "canRestore_grupos") &&
+                      "Restaurar"}
                   </>
                 )}
-          </>
-        }
+              </MenuItem>
+            )}
       </StyledMenu>
     </div>
   );

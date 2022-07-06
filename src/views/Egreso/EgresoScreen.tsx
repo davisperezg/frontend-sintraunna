@@ -79,7 +79,7 @@ const EgresoScreen = () => {
           "Verificando permisos..."
         ) : isErrorAccess ? (
           "Ha ocurrido un error por favor comunicarse al soporte"
-        ) : dataAccess.some((a: any) => a === "canCreate_egresos") ? (
+        ) : dataAccess?.some((a: any) => a === "canCreate_egresos") ? (
           <Button variant="outlined" onClick={handleClickOpen}>
             Crear Egreso
           </Button>
@@ -92,7 +92,7 @@ const EgresoScreen = () => {
         "Verificando permisos..."
       ) : isErrorAccess ? (
         "Ha ocurrido un error por favor comunicarse al soporte"
-      ) : dataAccess.some((a: any) => a === "canRead_egresos") ? (
+      ) : dataAccess?.some((a: any) => a === "canRead_egresos") ? (
         <EgresoList
           data={dataEgresos}
           columns={columns}

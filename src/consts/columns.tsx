@@ -295,12 +295,17 @@ export const columnConsultaXpao = [
     Header: "Pagos",
     accessor: "pagos",
     Cell: ({ value }: { value: { fecha: Date; importe: number }[] }) => {
-      return value.map(
-        (a) =>
-          "Fecha: " +
-          formatDate(new Date(String(a.fecha)), false) +
-          " - Importe: S/" +
-          formatter.format(a.importe)
+      return (
+        value?.map((a, i: number) => {
+          return (
+            <div key={i + 1}>
+              {"Fecha: " +
+                formatDate(new Date(String(a.fecha)), false) +
+                " - Importe: S/" +
+                formatter.format(a.importe)}
+            </div>
+          );
+        }) || <></>
       );
     },
   },
@@ -323,15 +328,22 @@ export const columnConsultaPagos = [
     }: {
       value: { fecha: Date; importe: number; concepto: string }[];
     }) => {
-      return value.map((a) => (
-        <div style={{ marginLeft: 20, marginBottom: 20, width: "50%" }}>
-          <strong>{a.concepto}</strong>
-          <ul>
-            <li>Fecha: {formatDate(new Date(String(a.fecha)), false)}</li>
-            <li>Importe: {formatter.format(a.importe)}</li>
-          </ul>
-        </div>
-      ));
+      return (
+        value?.map((a, i: number) => {
+          return (
+            <div
+              key={i + 1}
+              style={{ marginLeft: 20, marginBottom: 20, float: "left" }}
+            >
+              <strong>{a.concepto}</strong>
+              <ul>
+                <li>Fecha: {formatDate(new Date(String(a.fecha)), false)}</li>
+                <li>Importe: {formatter.format(a.importe)}</li>
+              </ul>
+            </div>
+          );
+        }) || <></>
+      );
     },
   },
 ];
