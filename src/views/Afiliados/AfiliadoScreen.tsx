@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { useMemo, useState } from "react";
 import AfiliadoCreate from "../../components/afiliados/AfiliadoCreate";
 import AfiliadoEdit from "../../components/afiliados/AfiliadoEdit";
@@ -35,6 +35,11 @@ const AfiliadoScreen = () => {
 
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const [buscar, setBuscar] = useState("");
+
+  const handleSearch = (e: any) => {
+    setBuscar(e.target.value);
+  };
 
   const handleClickOpen = () => setOpen(true);
   const [afiliadoId, setId] = useState<string>("");
@@ -49,9 +54,16 @@ const AfiliadoScreen = () => {
   const handleCloseEdit = () => setOpenEdit(false);
 
   const dataAfiliados = useMemo(() => {
-    const data = afiliados;
-    return data || [];
-  }, [afiliados]);
+    let consultFiltered = afiliados;
+
+    if (buscar !== "") {
+      consultFiltered = afiliados?.filter((a: any) => {
+        return String(a.full_name).toLowerCase().includes(buscar.toLowerCase());
+      });
+    }
+
+    return consultFiltered || [];
+  }, [buscar, afiliados]);
 
   const columns = useMemo(() => columnAfiliado, []);
 
@@ -86,11 +98,23 @@ const AfiliadoScreen = () => {
       ) : isErrorAccess ? (
         "Ha ocurrido un error por favor comunicarse al soporte"
       ) : dataAccess?.some((a: any) => a === "canRead_afiliados") ? (
-        <AfiliadoList
-          data={dataAfiliados}
-          columns={columns}
-          handleClickOpen={handleClickOpenEdit}
-        />
+        <>
+          <div style={{ padding: 10 }}>
+            <TextField
+              id="outlined-name"
+              label="Buscar afiliado"
+              value={buscar}
+              onChange={handleSearch}
+              fullWidth
+              autoFocus
+            />
+          </div>
+          <AfiliadoList
+            data={dataAfiliados}
+            columns={columns}
+            handleClickOpen={handleClickOpenEdit}
+          />
+        </>
       ) : (
         "Usted no tiene el permiso para este listar afiliados"
       )}
