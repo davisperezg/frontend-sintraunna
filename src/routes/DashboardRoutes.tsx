@@ -15,6 +15,8 @@ import EgresoScreen from "../views/Egreso/EgresoScreen";
 import AfiliadoScreen from "../views/Afiliados/AfiliadoScreen";
 import GrupoScreen from "../views/Grupo/GrupoScreen";
 import PagoScreen from "../views/Pago/PagoScreen";
+import ConsultaXPago from "../views/Consultas/ConsultaXPago";
+import ConsultaGeneral from "../views/Consultas/ConsultaGeneral";
 
 export const DashboardRoutes = () => {
   return (
@@ -60,11 +62,14 @@ export const DashboardRoutes = () => {
             path="/module/:idModule/menu/:idMenu/afiliados"
             element={<AfiliadoScreen />}
           />
-
-          {/* <Route
-            path="/module/:idModule/menu/:idMenu/ingresos/:idIngreso"
-            element={<IngresoDetailsScreen />}
-          /> */}
+          <Route
+            path="/module/:idModule/menu/:idMenu/consulta-pagos"
+            element={<ConsultaXPago />}
+          />
+          <Route
+            path="/module/:idModule/menu/:idMenu/consulta-general"
+            element={<ConsultaGeneral />}
+          />
         </Routes>
         <ToastContainer />
       </Layout>

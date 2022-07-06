@@ -11,16 +11,16 @@ export const formatter = new Intl.NumberFormat("en-US", {
 });
 
 export const formatDate = (date: Date, time: boolean) => {
-  let hours: any = date.getHours();
-  let minutes: any = date.getMinutes();
-  const ampm = hours >= 12 ? "pm" : "am";
-  hours = hours % 12;
-  hours = hours ? hours : 12; // the hour '0' should be '12'
-  minutes = minutes < 10 ? "0" + minutes : minutes;
-  const strTime = hours + ":" + minutes + " " + ampm;
   if (time) {
+    let hours: any = date.getHours();
+    let minutes: any = date.getMinutes();
+    const ampm = hours >= 12 ? "pm" : "am";
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    const strTime = hours + ":" + minutes + " " + ampm;
     return (
-      date.getDate() +
+      (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) +
       "/" +
       (date.getMonth() + 1 < 10
         ? "0" + (date.getMonth() + 1)
@@ -32,7 +32,7 @@ export const formatDate = (date: Date, time: boolean) => {
     );
   } else {
     return (
-      date.getDate() +
+      (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) +
       "/" +
       (date.getMonth() + 1 < 10
         ? "0" + (date.getMonth() + 1)

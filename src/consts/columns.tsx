@@ -1,5 +1,5 @@
 import { Chip, Stack } from "@mui/material";
-import { formatDate } from "../utils/helpers/functions";
+import { formatDate, formatter } from "../utils/helpers/functions";
 
 export const columnUsers = [
   {
@@ -279,5 +279,59 @@ export const columnPago = [
         )}
       </Stack>
     ),
+  },
+];
+
+export const columnConsultaXpao = [
+  {
+    Header: "#",
+    accessor: "index",
+  },
+  {
+    Header: "Afiliado",
+    accessor: "afiliado",
+  },
+  {
+    Header: "Pagos",
+    accessor: "pagos",
+    Cell: ({ value }: { value: { fecha: Date; importe: number }[] }) => {
+      return value.map(
+        (a) =>
+          "Fecha: " +
+          formatDate(new Date(String(a.fecha)), false) +
+          " - Importe: S/" +
+          formatter.format(a.importe)
+      );
+    },
+  },
+];
+
+export const columnConsultaPagos = [
+  {
+    Header: "#",
+    accessor: "index",
+  },
+  {
+    Header: "Afiliado",
+    accessor: "afiliado",
+  },
+  {
+    Header: "Pagos",
+    accessor: "pagos",
+    Cell: ({
+      value,
+    }: {
+      value: { fecha: Date; importe: number; concepto: string }[];
+    }) => {
+      return value.map((a) => (
+        <div style={{ marginLeft: 20, marginBottom: 20, width: "50%" }}>
+          <strong>{a.concepto}</strong>
+          <ul>
+            <li>Fecha: {formatDate(new Date(String(a.fecha)), false)}</li>
+            <li>Importe: {formatter.format(a.importe)}</li>
+          </ul>
+        </div>
+      ));
+    },
   },
 ];

@@ -1,6 +1,6 @@
 {
-  "name": "appfront-club",
-  "version": "1.2.0",
+  "name": "appfront-portal",
+  "version": "1.2.1",
   "private": true,
   "dependencies": {
     "@date-io/date-fns": "^2.14.0",

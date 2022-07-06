@@ -92,7 +92,7 @@ const GrupoScreen = () => {
           handleClickOpen={handleClickOpenEdit}
         />
       ) : (
-        "Usted no tiene el permiso para este listar grupos"
+        "Usted no tiene el permiso para listar grupos"
       )}
 
       <GrupoCreate handleClose={handleClose} open={open} />
