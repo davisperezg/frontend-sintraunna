@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import MyBreadcrumbs from "../../components/breadcrumbs/Index";
 import ConsultaList from "../../components/Consulta/ConsultaList";
 import { useBreadcrumbs } from "../../components/hooks/useBreadcrumbs";
@@ -8,6 +8,7 @@ import { useAccess } from "../../components/hooks/useResources";
 import { columnConsultaPagos } from "../../consts/columns";
 import { formatter } from "../../utils/helpers/functions";
 import { ContentSearch, OptionsConsultaGeneral } from "./ConsultaStyle";
+import { useReactToPrint } from "react-to-print";
 
 const ConsultaGeneral = () => {
   const [
@@ -32,6 +33,15 @@ const ConsultaGeneral = () => {
     error: errorPagos,
   } = useConsultaGeneral();
   const [buscar, setBuscar] = useState("");
+  const componentRef = useRef(null);
+
+  const reactToPrintContent = () => componentRef.current;
+
+  const handlePrint = useReactToPrint({
+    content: reactToPrintContent,
+    documentTitle: "CONSULTA GENERAL",
+    removeAfterPrint: true,
+  });
 
   const data = useMemo(() => {
     let consultFiltered = dataPagos;
@@ -48,20 +58,6 @@ const ConsultaGeneral = () => {
 
   const handleSearch = (e: any) => {
     setBuscar(e.target.value);
-  };
-
-  const print = () => {
-    const prtContent = document.getElementById("content");
-    let WinPrint = window.open(
-      "",
-      "",
-      "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
-    );
-    WinPrint!.document.write(prtContent!.innerHTML);
-    WinPrint!.document.close();
-    WinPrint!.focus();
-    WinPrint!.print();
-    WinPrint!.close();
   };
 
   const monto = useMemo(() => {
@@ -98,23 +94,21 @@ const ConsultaGeneral = () => {
               value={buscar}
               onChange={handleSearch}
               fullWidth
+              autoFocus
             />
           </ContentSearch>
           <OptionsConsultaGeneral>
-            <button onClick={print}>Imprimir</button>
+            <button onClick={handlePrint}>Imprimir</button>
           </OptionsConsultaGeneral>
 
-          <div id="content">
+          <div ref={componentRef}>
             <div style={{ paddingLeft: 10 }}>
-              <label style={{ color: "green" }}>
-                Importe general:{" "}
-                <strong>
-                  S/{" "}
-                  {formatter.format(
-                    monto?.reduce((prev: any, curr: any) => prev + curr, 0)
-                  )}
-                </strong>
-              </label>
+              <h3>
+                Importe general: S/{" "}
+                {formatter.format(
+                  monto?.reduce((prev: any, curr: any) => prev + curr, 0)
+                )}
+              </h3>
             </div>
             {isLoadingPagos ? (
               isErrorPagos ? (

@@ -5,7 +5,8 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { useReactToPrint } from "react-to-print";
 import MyBreadcrumbs from "../../components/breadcrumbs/Index";
 import ConsultaList from "../../components/Consulta/ConsultaList";
 import { useBreadcrumbs } from "../../components/hooks/useBreadcrumbs";
@@ -51,6 +52,7 @@ const ConsultaXPago = () => {
     // error: errorCPago,
     refetch: refetchCPago,
   } = useConsultaXpago(pago);
+  const componentRef = useRef(null);
 
   const handleChange = (e: any) => {
     setPago(e.target.value);
@@ -64,20 +66,6 @@ const ConsultaXPago = () => {
 
   const columns = useMemo(() => columnConsultaXpao, []);
 
-  const print = () => {
-    const prtContent = document.getElementById("content");
-    let WinPrint = window.open(
-      "",
-      "",
-      "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
-    );
-    WinPrint!.document.write(prtContent!.innerHTML);
-    WinPrint!.document.close();
-    WinPrint!.focus();
-    WinPrint!.print();
-    WinPrint!.close();
-  };
-
   const monto = useMemo(() => {
     const calc = (data as any)?.map((a: any) => {
       return a.pagos?.reduce((prev: any, curr: any) => {
@@ -87,6 +75,14 @@ const ConsultaXPago = () => {
 
     return calc || [0];
   }, [data]);
+
+  const reactToPrintContent = () => componentRef.current;
+
+  const handlePrint = useReactToPrint({
+    content: reactToPrintContent,
+    documentTitle: "CONSULTA X CUOTA",
+    removeAfterPrint: true,
+  });
 
   return (
     <>
@@ -141,20 +137,17 @@ const ConsultaXPago = () => {
               </Button>
             </div>
             <div>
-              <button onClick={print}>Imprimir</button>
+              <button onClick={handlePrint}>Imprimir</button>
             </div>
           </OptionsConsultaXpago>
-          <div id="content">
+          <div ref={componentRef}>
             <div style={{ paddingLeft: 10 }}>
-              <label style={{ color: "green" }}>
-                Importe general:{" "}
-                <strong>
-                  S/{" "}
-                  {formatter.format(
-                    monto.reduce((prev: any, curr: any) => prev + curr, 0)
-                  )}
-                </strong>
-              </label>
+              <h3>
+                Importe general: S/{" "}
+                {formatter.format(
+                  monto.reduce((prev: any, curr: any) => prev + curr, 0)
+                )}
+              </h3>
             </div>
             {isLoadingCPago ? (
               isErrorCPago ? (
