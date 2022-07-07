@@ -3,17 +3,19 @@ import { DialogTitle, IconButton } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import CloseIcon from "@mui/icons-material/Close";
 
-export const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  "& .MuiDialogContent-root": {
-    padding: 0,
-    height: "500px",
-    width: "600px",
-    overflow: "hidden",
-  },
-  "& .MuiDialogActions-root": {
-    padding: theme.spacing(1),
-  },
-}));
+export const BootstrapDialog = styled(Dialog)<{ myWidth?: string }>(
+  ({ theme, myWidth = "600px" }) => ({
+    "& .MuiDialogContent-root": {
+      padding: 0,
+      height: "500px",
+      width: myWidth,
+      overflow: "hidden",
+    },
+    "& .MuiDialogActions-root": {
+      padding: theme.spacing(1),
+    },
+  })
+);
 //height: 404px;  overflow: auto;
 export interface DialogTitleProps {
   id: string;

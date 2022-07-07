@@ -89,6 +89,7 @@ const AfiliadoCreate = ({ handleClose, open }: IModal) => {
       {
         nro: Number(getEndNumber) + 1,
         fecha: new Date(),
+        destino_dinero: "",
         pago: "",
         importe: 0,
       },
@@ -117,6 +118,9 @@ const AfiliadoCreate = ({ handleClose, open }: IModal) => {
         onClose={closeModal}
         aria-labelledby="customized-dialog-title"
         open={open}
+        maxWidth="md"
+        fullWidth
+        myWidth="100%"
       >
         <BootstrapDialogTitle id="customized-dialog-title" onClose={closeModal}>
           Nuevo Afiliado

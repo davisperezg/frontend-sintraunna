@@ -19,6 +19,7 @@ export interface Afiliado {
   pagos: {
     nro: number;
     fecha: Date;
+    destino_dinero?: string;
     pago: Pago | string;
     importe: number;
   }[];

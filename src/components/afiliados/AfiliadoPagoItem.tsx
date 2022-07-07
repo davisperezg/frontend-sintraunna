@@ -3,6 +3,7 @@ import {
   FormControl,
   Grid,
   InputAdornment,
+  InputLabel,
   MenuItem,
   Select,
   TextField,
@@ -31,6 +32,7 @@ const AfiliadoPagoItem = ({
     nro: "",
     fecha: new Date(),
     pago: "",
+    destino_dinero: "",
     importe: 0,
   });
 
@@ -46,6 +48,7 @@ const AfiliadoPagoItem = ({
         nro: item.nro,
         fecha: item.fecha,
         pago: item.pago,
+        destino_dinero: item.destino_dinero,
         importe: item.importe,
       });
     }
@@ -53,7 +56,7 @@ const AfiliadoPagoItem = ({
 
   return (
     <Grid spacing={1} container style={{ paddingLeft: 16, paddingTop: 16 }}>
-      <Grid item md={3}>
+      <Grid item md={2}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DesktopDatePicker
             label="Fecha del pago"
@@ -75,7 +78,37 @@ const AfiliadoPagoItem = ({
           />
         </LocalizationProvider>
       </Grid>
-      <Grid item md={4}>
+      <Grid item md={3}>
+        <FormControl fullWidth>
+          <InputLabel id="destino_dinero-select-label">
+            Destino del dinero
+          </InputLabel>
+          <Select
+            required
+            labelId="destino_dinero-select-label"
+            id="destino_dinero-select"
+            value={itemP.destino_dinero as string}
+            label="Destino del dinero"
+            onChange={(e) => {
+              const ele = itemsPagos.map((res: any) => {
+                return {
+                  ...res,
+                  destino_dinero:
+                    res.destino_dinero === item.destino_dinero
+                      ? e.target.value
+                      : res.destino_dinero,
+                };
+              });
+              setItemsPagos(ele);
+              setItemP({ ...itemP, destino_dinero: e.target.value });
+            }}
+          >
+            <MenuItem value="OLGER PEREZ">OLGER PEREZ</MenuItem>
+            <MenuItem value="ABILIO CORONADO">ABILIO CORONADO</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid item md={3}>
         <FormControl fullWidth>
           <Select
             required
@@ -131,7 +164,7 @@ const AfiliadoPagoItem = ({
           </Select>
         </FormControl>
       </Grid>
-      <Grid item md={3}>
+      <Grid item md={2}>
         <TextField
           fullWidth
           required

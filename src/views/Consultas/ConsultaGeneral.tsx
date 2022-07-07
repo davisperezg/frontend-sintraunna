@@ -9,6 +9,8 @@ import { columnConsultaPagos } from "../../consts/columns";
 import { formatter } from "../../utils/helpers/functions";
 import { ContentSearch, OptionsConsultaGeneral } from "./ConsultaStyle";
 import { useReactToPrint } from "react-to-print";
+import ConsultaEgresoListModal from "../../components/Consulta/ConsultaEgresoListModal";
+import { useEgresos } from "../../components/hooks/useEgreso";
 
 const ConsultaGeneral = () => {
   const [
@@ -34,6 +36,8 @@ const ConsultaGeneral = () => {
   } = useConsultaGeneral();
   const [buscar, setBuscar] = useState("");
   const componentRef = useRef(null);
+  const [showMEgresos, setShowMEgresos] = useState(false);
+  const { data: dataEgresos, isLoading, isError, error } = useEgresos();
 
   const reactToPrintContent = () => componentRef.current;
 
@@ -54,6 +58,17 @@ const ConsultaGeneral = () => {
 
     return consultFiltered || [];
   }, [dataPagos, buscar]);
+
+  const montoEgresos = useMemo(() => {
+    const calc = (dataEgresos as any)?.map((a: any) => {
+      return a.gastos?.reduce((prev: any, curr: any) => {
+        return prev + curr.monto;
+      }, 0);
+    });
+
+    return calc || [0];
+  }, [dataEgresos]);
+
   const columns = useMemo(() => columnConsultaPagos, []);
 
   const handleSearch = (e: any) => {
@@ -69,6 +84,14 @@ const ConsultaGeneral = () => {
 
     return calc || [0];
   }, [data]);
+
+  const showModalEgresos = () => {
+    setShowMEgresos(true);
+  };
+
+  const closeModalEgresos = () => {
+    setShowMEgresos(false);
+  };
 
   return (
     <>
@@ -101,12 +124,53 @@ const ConsultaGeneral = () => {
             <button onClick={handlePrint}>Imprimir</button>
           </OptionsConsultaGeneral>
 
+          {showMEgresos && (
+            <ConsultaEgresoListModal
+              handleClose={closeModalEgresos}
+              open={showMEgresos}
+            />
+          )}
+
           <div ref={componentRef}>
             <div style={{ paddingLeft: 10 }}>
+              <h3>Relevo caja anterior: S/8150.00</h3>
+              <h3>-------------------------------------------------</h3>
               <h3>
-                Importe general: S/{" "}
+                Importe general de afiliados: S/{" "}
                 {formatter.format(
                   monto?.reduce((prev: any, curr: any) => prev + curr, 0)
+                )}
+              </h3>
+              <h3>
+                Importe general de egresos: S/{" "}
+                {formatter.format(
+                  montoEgresos?.reduce((prev: any, curr: any) => prev + curr, 0)
+                )}
+                {" - "}
+                <label
+                  style={{
+                    color: "red",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                  }}
+                  onClick={showModalEgresos}
+                >
+                  Ver egresos
+                </label>
+              </h3>
+              <h3>-------------------------------------------------</h3>
+              <h3>
+                Resumen: S/{" "}
+                {formatter.format(
+                  Number(
+                    monto?.reduce((prev: any, curr: any) => prev + curr, 0)
+                  ) -
+                    Number(
+                      montoEgresos?.reduce(
+                        (prev: any, curr: any) => prev + curr,
+                        0
+                      )
+                    )
                 )}
               </h3>
             </div>

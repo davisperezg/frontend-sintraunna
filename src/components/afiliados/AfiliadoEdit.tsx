@@ -198,6 +198,9 @@ const AfiliadoEdit = ({ handleClose, open, entityId }: IModal) => {
         onClose={closeModal}
         aria-labelledby="customized-dialog-title"
         open={open}
+        maxWidth="md"
+        fullWidth
+        myWidth="100%"
       >
         {isLoading ? (
           "Obteniendo datos..."
