@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/static/css/main.8db62d89.css",
-    "main.js": "/static/js/main.efed6157.js",
+    "main.js": "/static/js/main.a5cc42e0.js",
     "static/js/787.c07afb26.chunk.js": "/static/js/787.c07afb26.chunk.js",
     "static/media/LogoSintraunnaMod.jpeg": "/static/media/LogoSintraunnaMod.1f4df2346b717c8ea4b3.jpeg",
     "index.html": "/index.html",
     "main.8db62d89.css.map": "/static/css/main.8db62d89.css.map",
-    "main.efed6157.js.map": "/static/js/main.efed6157.js.map",
+    "main.a5cc42e0.js.map": "/static/js/main.a5cc42e0.js.map",
     "787.c07afb26.chunk.js.map": "/static/js/787.c07afb26.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.8db62d89.css",
-    "static/js/main.efed6157.js"
+    "static/js/main.a5cc42e0.js"
   ]
 }
