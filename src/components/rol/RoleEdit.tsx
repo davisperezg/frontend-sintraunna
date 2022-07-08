@@ -89,14 +89,14 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
     isError: isErrorListResources,
     error: errorListResources,
   } = useResources();
-  const [role, setRole] = useState<Role>(initialState);
+  const [roleEntity, setRoleEntity] = useState<Role>(initialState);
   const [resToList, setResToList] = useState<any[]>([]);
   const [moduleSelected, setModuleSelected] = useState<string[]>([]);
   const [permisosSelected, setPermisosSelected] = useState<string[]>([]);
   const { mutateAsync, isLoading: isLoadingMutate } = useMutateRole();
   const { mutateAsync: mutateResource, isLoading: isLoadingMutateResource } =
     useMutateResourceRol();
-  const { data, isLoading, isError, error } = useRole(roleId);
+  const { data: dataRole, isLoading, isError, error } = useRole(roleId);
   const {
     data: dataAccess,
     //isLoading: isLoadingAccess,
@@ -110,14 +110,14 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
   };
 
   const handleChange = <P extends keyof Role>(prop: P, value: Role[P]) => {
-    setRole({ ...role, [prop]: value });
+    setRoleEntity({ ...roleEntity, [prop]: value });
   };
 
   const handleOk = async () => {
     try {
       await mutateAsync({
-        dataRole: { ...role, module: moduleSelected },
-        idUpdateData: role._id,
+        dataRole: { ...roleEntity, module: moduleSelected },
+        idUpdateData: roleEntity._id,
       });
       await mutateResource({
         body: {
@@ -126,7 +126,7 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
         },
       });
       toast.success("Rol actualizado. !");
-      setRole(initialState);
+      setRoleEntity(initialState);
       handleClose();
     } catch (e: any) {
       const error: ErrorServer = JSON.parse(e.request.response);
@@ -143,21 +143,21 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
   };
 
   const loadRole = useCallback(() => {
-    if (data)
-      setRole({
-        _id: data?._id,
-        name: data?.name,
-        description: data?.description ? data?.description : "",
-        module: data?.module,
+    if (dataRole)
+      setRoleEntity({
+        _id: dataRole?._id,
+        name: dataRole?.name as string,
+        description: dataRole?.description,
+        module: dataRole?.module as string[],
       });
 
-    setModuleSelected(data?.module as []);
+    setModuleSelected(dataRole?.module as []);
 
     setPermisosSelected(dataAccess);
-  }, [data, dataAccess]);
+  }, [dataRole, dataAccess]);
 
   const loadRes = useCallback(() => {
-    if (role.name === rolSA) {
+    if (dataRole?.name === rolSA) {
       if (resources) {
         const findRes: any[] = [];
         resources.filter((a: any) => {
@@ -186,12 +186,12 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
     } else {
       setResToList(resources);
     }
-  }, [role.name, resources]);
+  }, [dataRole?.name, resources]);
 
   useEffect(() => {
-    loadRole();
     loadRes();
-  }, [loadRole, loadRes]);
+    loadRole();
+  }, [loadRes, loadRole]);
 
   return (
     <>
@@ -210,7 +210,7 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
               id="customized-dialog-title"
               onClose={handleClose}
             >
-              Rol - {data?.name}
+              Rol - {dataRole?.name}
             </BootstrapDialogTitle>
             <DialogContent dividers>
               {isErrorGetRRol && (
@@ -248,12 +248,12 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
                 </Box>
                 <TabPanel value={value} index={0}>
                   <Grid container spacing={2}>
-                    {role.name !== rolSA && (
+                    {dataRole?.name !== rolSA && (
                       <Grid item md={12}>
                         <TextField
                           fullWidth
                           required
-                          value={role.name}
+                          value={roleEntity.name}
                           onChange={(e) => handleChange("name", e.target.value)}
                           id="name-required"
                           label="Nombre"
@@ -265,7 +265,7 @@ const RoleEdit = ({ handleClose, open, roleId }: Props) => {
                     <Grid item md={12}>
                       <TextField
                         fullWidth
-                        value={role.description}
+                        value={roleEntity.description}
                         onChange={(e) =>
                           handleChange("description", e.target.value)
                         }

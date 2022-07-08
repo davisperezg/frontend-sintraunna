@@ -213,7 +213,7 @@ const AfiliadoEdit = ({ handleClose, open, entityId }: IModal) => {
               id="customized-dialog-title"
               onClose={closeModal}
             >
-              AFILIADO {afiliado.nombres + " " + afiliado.apellidos}
+              AFILIADO {data?.nombres + " " + data?.apellidos}
             </BootstrapDialogTitle>
             <DialogContent dividers>
               {/* {isErrorListModules && (
