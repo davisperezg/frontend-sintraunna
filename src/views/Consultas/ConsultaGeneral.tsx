@@ -191,8 +191,6 @@ const ConsultaGeneral = () => {
 
           <div ref={componentRef}>
             <div style={{ paddingLeft: 10, fontSize: 12 }}>
-              <h3>Relevo caja anterior: S/8150.00</h3>
-
               <h3>
                 Afiliados depositaron a Abilio Coronado:
                 {" S/"}
