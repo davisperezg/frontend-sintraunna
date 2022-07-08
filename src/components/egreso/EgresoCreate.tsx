@@ -66,6 +66,7 @@ const EgresoCreate = ({ handleClose, open }: IModal) => {
       ...itemsGasto,
       {
         nro: Number(getEndNumber) + 1,
+        proviene_dinero: "",
         gasto: "",
         monto: "",
       },

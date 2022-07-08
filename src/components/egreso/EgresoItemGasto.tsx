@@ -1,4 +1,13 @@
-import { Button, Grid, InputAdornment, TextField } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  Grid,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -16,14 +25,16 @@ const EgresoItemGasto = ({
 }: Props) => {
   const [gasto, setGasto] = useState({
     nro: "",
+    proviene_dinero: "",
     gasto: "",
-    monto: "",
+    monto: 0,
   });
 
   useEffect(() => {
     if (item) {
       setGasto({
         nro: item.nro,
+        proviene_dinero: item.proviene_dinero,
         gasto: item.gasto,
         monto: item.monto,
       });
@@ -32,7 +43,35 @@ const EgresoItemGasto = ({
 
   return (
     <Grid spacing={3} container style={{ paddingLeft: 16, paddingTop: 16 }}>
-      <Grid item md={6}>
+      <Grid item md={3}>
+        <FormControl fullWidth>
+          <InputLabel id="proviene_dinero-select-label">
+            Dinero proviene de
+          </InputLabel>
+          <Select
+            required
+            labelId="proviene_dinero-select-label"
+            id="proviene_dinero-select"
+            value={gasto.proviene_dinero as string}
+            label="Dinero proviene de"
+            onChange={(e) => {
+              const ele = itemsGasto.map((res: any) => {
+                return {
+                  ...res,
+                  proviene_dinero:
+                    res.nro === item.nro ? e.target.value : res.proviene_dinero,
+                };
+              });
+              setItemsGasto(ele);
+              setGasto({ ...gasto, proviene_dinero: e.target.value });
+            }}
+          >
+            <MenuItem value="OLGER PEREZ">OLGER PEREZ</MenuItem>
+            <MenuItem value="ABILIO CORONADO">ABILIO CORONADO</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid item md={3}>
         <TextField
           fullWidth
           required
@@ -70,26 +109,16 @@ const EgresoItemGasto = ({
             const arr = value.split(".");
             const decimal = arr.length >= 2 && arr[1];
             if (Number(value) < 0) return;
-            if (typeof decimal === "string" && decimal.length <= 2) {
-              const ele = itemsGasto.map((res: any) => {
-                return {
-                  ...res,
-                  monto: res.nro === item.nro ? e.target.value : res.monto,
-                };
-              });
-              setItemsGasto(ele);
-              setGasto({ ...gasto, monto: e.target.value });
-            }
-            if (typeof decimal === "boolean" && decimal === false) {
-              const ele = itemsGasto.map((res: any) => {
-                return {
-                  ...res,
-                  monto: res.nro === item.nro ? e.target.value : res.monto,
-                };
-              });
-              setItemsGasto(ele);
-              setGasto({ ...gasto, monto: e.target.value });
-            }
+            if ((decimal as string).length > 2) return;
+            const ele = itemsGasto.map((res: any) => {
+              return {
+                ...res,
+                monto:
+                  res.nro === item.nro ? Number(e.target.value) : res.monto,
+              };
+            });
+            setItemsGasto(ele);
+            setGasto({ ...gasto, monto: Number(e.target.value) });
           }}
           label={`Monto ${gasto.nro}`}
         />

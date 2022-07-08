@@ -400,7 +400,15 @@ const ConsultaEgresoListModal = ({ handleClose, open }: IModal) => {
                                       {b.gasto} -{" "}
                                     </li>
                                     <li style={{ listStyle: "none" }}>
-                                      S/{formatter.format(b.monto)}
+                                      S/{formatter.format(b.monto)} -{" "}
+                                    </li>
+                                    <li
+                                      style={{
+                                        listStyle: "none",
+                                        fontWeight: 700,
+                                      }}
+                                    >
+                                      {b.proviene_dinero}
                                     </li>
                                   </ul>
                                 </div>

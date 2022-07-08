@@ -71,6 +71,34 @@ const ConsultaGeneral = () => {
     return calc || [0];
   }, [dataEgresos]);
 
+  const montoEgresosAbilio = useMemo(() => {
+    const calc = (dataEgresos as any)?.map((a: any) => {
+      return a.gastos
+        ?.filter((b: any) => {
+          return b.proviene_dinero === "ABILIO CORONADO";
+        })
+        .reduce((prev: any, curr: any) => {
+          return prev + curr.monto;
+        }, 0);
+    });
+
+    return calc || [0];
+  }, [dataEgresos]);
+
+  const montoEgresosOlger = useMemo(() => {
+    const calc = (dataEgresos as any)?.map((a: any) => {
+      return a.gastos
+        ?.filter((b: any) => {
+          return b.proviene_dinero === "OLGER PEREZ";
+        })
+        .reduce((prev: any, curr: any) => {
+          return prev + curr.monto;
+        }, 0);
+    });
+
+    return calc || [0];
+  }, [dataEgresos]);
+
   const columns = useMemo(() => columnConsultaPagos, []);
 
   const handleSearch = (e: any) => {
@@ -162,11 +190,11 @@ const ConsultaGeneral = () => {
           )}
 
           <div ref={componentRef}>
-            <div style={{ paddingLeft: 10 }}>
+            <div style={{ paddingLeft: 10, fontSize: 12 }}>
               <h3>Relevo caja anterior: S/8150.00</h3>
 
               <h3>
-                Importe total de personas que han depositado a Abilio Coronado:
+                Afiliados depositaron a Abilio Coronado:
                 {" S/"}
                 {formatter.format(
                   montoAbiliado?.reduce(
@@ -176,7 +204,7 @@ const ConsultaGeneral = () => {
                 )}
               </h3>
               <h3>
-                Importe total de personas que han depositado a Olger Pérez:
+                Afiliados depositaron a Olger Pérez:
                 {" S/"}
                 {formatter.format(
                   montoOlger?.reduce((prev: any, curr: any) => prev + curr, 0)
@@ -186,15 +214,36 @@ const ConsultaGeneral = () => {
               <h3>
                 Importe general de afiliado
                 {buscar === "" ? "s" : (data as any[]).length === 1 ? "" : "s"}:
-                S/{" "}
+                S/
                 {formatter.format(
                   monto?.reduce((prev: any, curr: any) => prev + curr, 0)
                 )}
               </h3>
               {buscar === "" && (
-                <>
+                <div>
+                  <br />
+                  <br />
                   <h3>
-                    Importe general de egresos: S/{" "}
+                    Total de salida del dinero de Abilio Coronado: S/
+                    {formatter.format(
+                      montoEgresosAbilio?.reduce(
+                        (prev: any, curr: any) => prev + curr,
+                        0
+                      )
+                    )}
+                  </h3>
+                  <h3>
+                    Total de salida del dinero de Olger Pérez: S/
+                    {formatter.format(
+                      montoEgresosOlger?.reduce(
+                        (prev: any, curr: any) => prev + curr,
+                        0
+                      )
+                    )}
+                  </h3>
+                  <h3>-------------------------------------------------</h3>
+                  <h3>
+                    Importe general de salida: S/
                     {formatter.format(
                       montoEgresos?.reduce(
                         (prev: any, curr: any) => prev + curr,
@@ -228,7 +277,7 @@ const ConsultaGeneral = () => {
                         )
                     )}
                   </h3>
-                </>
+                </div>
               )}
             </div>
             {isLoadingPagos ? (

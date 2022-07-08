@@ -1,4 +1,3 @@
-import { Afiliado } from "./Afiliado";
 import { User } from "./User";
 
 export interface Egreso {
@@ -10,6 +9,11 @@ export interface Egreso {
   detalle_egreso: string;
   nombre_destinatario: string;
   status?: boolean;
-  gastos: { nro: number; gasto: string; monto: number }[];
+  gastos: {
+    nro: number;
+    gasto: string;
+    monto: number;
+    proviene_dinero?: string;
+  }[];
   motivo?: string;
 }

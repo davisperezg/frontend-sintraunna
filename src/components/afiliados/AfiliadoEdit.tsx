@@ -97,6 +97,7 @@ const AfiliadoEdit = ({ handleClose, open, entityId }: IModal) => {
       ...itemsPagos,
       {
         nro: Number(getEndNumber) + 1,
+        destino_dinero: "",
         fecha: new Date(),
         pago: "",
         importe: 0,

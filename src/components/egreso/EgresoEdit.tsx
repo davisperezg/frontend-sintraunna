@@ -120,6 +120,7 @@ const EgresoEdit = ({ handleClose, open, entityId }: IModal) => {
       ...itemsGasto,
       {
         nro: Number(getEndNumber) + 1,
+        proviene_dinero: "",
         gasto: "",
         monto: "",
       },
