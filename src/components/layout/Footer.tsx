@@ -7,7 +7,7 @@ const Footer = () => {
         <p>
           © 2022 by KemayTechnology. Todos los derechos reservados. Si tuviese
           algún inconveniente por favor contactarnos al siguiente correo:
-          davisperezg@gmail.com Version: 1.2.3 | Powered by @davisperezg
+          davisperezg@gmail.com Version: 1.2.4 | Powered by @davisperezg
         </p>
       </Copy>
     </Foote>
