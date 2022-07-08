@@ -94,9 +94,7 @@ const AfiliadoPagoItem = ({
                 return {
                   ...res,
                   destino_dinero:
-                    res.destino_dinero === item.destino_dinero
-                      ? e.target.value
-                      : res.destino_dinero,
+                    res.nro === item.nro ? e.target.value : res.destino_dinero,
                 };
               });
               setItemsPagos(ele);

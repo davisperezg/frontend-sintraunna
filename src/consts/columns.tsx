@@ -294,7 +294,11 @@ export const columnConsultaXpao = [
   {
     Header: "Pagos",
     accessor: "pagos",
-    Cell: ({ value }: { value: { fecha: Date; importe: number }[] }) => {
+    Cell: ({
+      value,
+    }: {
+      value: { fecha: Date; importe: number; destino_dinero: string }[];
+    }) => {
       return (
         value?.map((a, i: number) => {
           return (
@@ -302,7 +306,9 @@ export const columnConsultaXpao = [
               {"Fecha: " +
                 formatDate(new Date(String(a.fecha)), false) +
                 " - Importe: S/" +
-                formatter.format(a.importe)}
+                formatter.format(a.importe) +
+                " - Destino del dinero: " +
+                (a.destino_dinero ? a.destino_dinero : "SIN ASIGNAR")}
             </div>
           );
         }) || <></>
@@ -326,7 +332,12 @@ export const columnConsultaPagos = [
     Cell: ({
       value,
     }: {
-      value: { fecha: Date; importe: number; concepto: string }[];
+      value: {
+        fecha: Date;
+        importe: number;
+        concepto: string;
+        destino_dinero: string;
+      }[];
     }) => {
       return (
         value?.map((a, i: number) => {
@@ -339,6 +350,10 @@ export const columnConsultaPagos = [
               <ul>
                 <li>Fecha: {formatDate(new Date(String(a.fecha)), false)}</li>
                 <li>Importe: {formatter.format(a.importe)}</li>
+                <li>
+                  Destino del dinero:{" "}
+                  {a.destino_dinero ? a.destino_dinero : "SIN ASIGNAR"}
+                </li>
               </ul>
             </div>
           );

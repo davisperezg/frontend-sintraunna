@@ -58,7 +58,9 @@ const AfiliadoScreen = () => {
 
     if (buscar !== "") {
       consultFiltered = afiliados?.filter((a: any) => {
-        return String(a.full_name).toLowerCase().includes(buscar.toLowerCase());
+        return String(a.full_name)
+          .toLowerCase()
+          .includes(buscar.toLowerCase().trim());
       });
     }
 

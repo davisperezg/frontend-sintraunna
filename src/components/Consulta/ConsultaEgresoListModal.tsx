@@ -51,74 +51,370 @@ const ConsultaEgresoListModal = ({ handleClose, open }: IModal) => {
               monto?.reduce((prev: any, curr: any) => prev + curr, 0)
             )}
           </h3>
-          <table
+          <div
             style={{
-              marginTop: 10,
-              border: "1px solid",
-              width: "100%",
-              borderCollapse: "collapse",
+              display: "flex",
+              flexDirection: "column",
+              flex: "1 1 auto",
+              position: "relative",
+              border: "0 solid #eee",
+              overflow: "hidden",
+              color: "#000",
             }}
           >
-            <thead>
-              <tr>
-                <th
+            <div
+              style={{
+                flex: "0 0 auto",
+                backgroundColor: "#f4f4f4",
+                position: "relative",
+                border: "1px solid #d0cecf",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  float: "left",
+                  paddingRight: "40px",
+                  color: "#464646",
+                }}
+              >
+                <table
                   style={{
-                    border: "1px solid",
-                    fontWeight: 700,
-                    height: 24,
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    verticalAlign: "middle",
-                    // borderLeft: "1px solid transparent",
-                    // borderRight: "1px solid transparent",
-                    textAlign: "left",
+                    borderRight: "1px solid #fff",
+                    borderCollapse: "collapse",
                   }}
                 >
-                  <div style={{ textAlign: "left", width: 100, padding: 5 }}>
-                    #
-                  </div>
-                </th>
-                <th style={{ border: "1px solid" }}>Fecha</th>
-                <th style={{ border: "1px solid" }}>Nombre del destinatario</th>
-                <th style={{ border: "1px solid" }}>Detalle del egreso</th>
-                <th style={{ border: "1px solid" }}>Gastos</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data?.map((a, i: number) => {
-                return (
-                  <tr key={i + 1}>
-                    <td style={{ border: "1px solid" }}>{i + 1}</td>
-                    <td style={{ border: "1px solid" }}>
-                      {formatDate(new Date(String(a.fecha)), false)}
-                    </td>
-                    <td style={{ border: "1px solid" }}>
-                      {a.nombre_destinatario}
-                    </td>
-                    <td style={{ border: "1px solid" }}>{a.detalle_egreso}</td>
-                    <td style={{ border: "1px solid" }}>
-                      {a.gastos.map((b) => {
-                        return (
-                          <div key={b.nro}>
-                            <ul style={{ display: "flex" }}>
-                              <li style={{ listStyle: "none" }}>{b.nro}.- </li>
-                              <li style={{ listStyle: "none" }}>
-                                {" "}
-                                {b.gasto} -{" "}
-                              </li>
-                              <li style={{ listStyle: "none" }}>
-                                S/{formatter.format(b.monto)}
-                              </li>
-                            </ul>
+                  <thead>
+                    <tr>
+                      <th
+                        style={{
+                          borderRight: "1px solid #d0cecf",
+                          borderLeft: "1px solid transparent",
+                          fontWeight: 700,
+                          height: 24,
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          verticalAlign: "middle",
+                          cursor: "pointer",
+                          textAlign: "left",
+                          padding: 0,
+                        }}
+                      >
+                        <div
+                          style={{
+                            textAlign: "left",
+                            width: 100,
+                            padding: 5,
+                            borderLeft: "0 solid transparent",
+                            fontSize: 12,
+                            fontFamily: "Arial",
+                          }}
+                        >
+                          #
+                        </div>
+                      </th>
+                      <th
+                        style={{
+                          borderRight: "1px solid #d0cecf",
+                          borderLeft: "1px solid transparent",
+                          fontWeight: 700,
+                          height: 24,
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          verticalAlign: "middle",
+                          cursor: "pointer",
+                          textAlign: "left",
+                          padding: 0,
+                        }}
+                      >
+                        <div
+                          style={{
+                            textAlign: "left",
+                            width: 100,
+                            padding: 5,
+                            borderLeft: "0 solid transparent",
+                            fontSize: 12,
+                            fontFamily: "Arial",
+                          }}
+                        >
+                          Fecha
+                        </div>
+                      </th>
+                      <th
+                        style={{
+                          borderRight: "1px solid #d0cecf",
+                          borderLeft: "1px solid transparent",
+                          fontWeight: 700,
+                          height: 24,
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          verticalAlign: "middle",
+                          cursor: "pointer",
+                          textAlign: "left",
+                          padding: 0,
+                        }}
+                      >
+                        <div
+                          style={{
+                            textAlign: "left",
+                            width: 160,
+                            padding: 5,
+                            borderLeft: "0 solid transparent",
+                            fontSize: 12,
+                            fontFamily: "Arial",
+                          }}
+                        >
+                          Nombre del destinatario
+                        </div>
+                      </th>
+                      <th
+                        style={{
+                          borderRight: "1px solid #d0cecf",
+                          borderLeft: "1px solid transparent",
+                          fontWeight: 700,
+                          height: 24,
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          verticalAlign: "middle",
+                          cursor: "pointer",
+                          textAlign: "left",
+                          padding: 0,
+                        }}
+                      >
+                        <div
+                          style={{
+                            textAlign: "left",
+                            width: 160,
+                            padding: 5,
+                            borderLeft: "0 solid transparent",
+                            fontSize: 12,
+                            fontFamily: "Arial",
+                          }}
+                        >
+                          Detalle del egreso
+                        </div>
+                      </th>
+                      <th
+                        style={{
+                          borderRight: "1px solid #d0cecf",
+                          borderLeft: "1px solid transparent",
+                          fontWeight: 700,
+                          height: 24,
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          verticalAlign: "middle",
+                          cursor: "pointer",
+                          textAlign: "left",
+                          padding: 0,
+                        }}
+                      >
+                        <div
+                          style={{
+                            textAlign: "left",
+                            width: 160,
+                            padding: 5,
+                            borderLeft: "0 solid transparent",
+                            fontSize: 12,
+                            fontFamily: "Arial",
+                          }}
+                        >
+                          Gastos
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+            <div
+              style={{
+                flex: "1 1 auto",
+                backgroundColor: "#fff",
+                position: "relative",
+                border: "1px solid #d0cecf",
+                overflow: "auto",
+                width: "100%",
+                color: "#000",
+                userSelect: "text",
+                height: "620px",
+                borderTop: 0,
+              }}
+            >
+              <table
+                style={{
+                  display: "table",
+                  marginBottom: "10px",
+                  borderCollapse: "collapse",
+                }}
+              >
+                <tbody>
+                  {data?.map((a, i: number) => {
+                    return (
+                      <tr key={i + 1}>
+                        <td
+                          style={{
+                            borderRight: "1px solid #d0cecf",
+                            borderLeft: "1px solid transparent",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            verticalAlign: "middle",
+                            textAlign: "left",
+                            padding: 0,
+                            borderBottom: "1px solid #e2e2e2",
+                          }}
+                        >
+                          <div
+                            style={{
+                              textAlign: "left",
+                              width: 100,
+                              padding: 5,
+                              paddingBottom: 4,
+                              minWidth: 0,
+                              borderTop: "0 solid transparent",
+                              borderLeft: "0 solid transparent",
+                              fontSize: 12,
+                              fontFamily: "Arial",
+                            }}
+                          >
+                            {i + 1}
                           </div>
-                        );
-                      })}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                        </td>
+                        <td
+                          style={{
+                            borderRight: "1px solid #d0cecf",
+                            borderLeft: "1px solid transparent",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            verticalAlign: "middle",
+                            textAlign: "left",
+                            padding: 0,
+                            borderBottom: "1px solid #e2e2e2",
+                          }}
+                        >
+                          <div
+                            style={{
+                              textAlign: "left",
+                              width: 100,
+                              padding: 5,
+                              paddingBottom: 4,
+                              minWidth: 0,
+                              borderTop: "0 solid transparent",
+                              borderLeft: "0 solid transparent",
+                              fontSize: 12,
+                              fontFamily: "Arial",
+                            }}
+                          >
+                            {formatDate(new Date(String(a.fecha)), false)}
+                          </div>
+                        </td>
+                        <td
+                          style={{
+                            borderRight: "1px solid #d0cecf",
+                            borderLeft: "1px solid transparent",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            verticalAlign: "middle",
+                            textAlign: "left",
+                            padding: 0,
+                            borderBottom: "1px solid #e2e2e2",
+                          }}
+                        >
+                          <div
+                            style={{
+                              textAlign: "left",
+                              width: 160,
+                              padding: 5,
+                              paddingBottom: 4,
+                              minWidth: 0,
+                              borderTop: "0 solid transparent",
+                              borderLeft: "0 solid transparent",
+                              fontSize: 12,
+                              fontFamily: "Arial",
+                            }}
+                          >
+                            {a.nombre_destinatario}
+                          </div>
+                        </td>
+                        <td
+                          style={{
+                            borderRight: "1px solid #d0cecf",
+                            borderLeft: "1px solid transparent",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            verticalAlign: "middle",
+                            textAlign: "left",
+                            padding: 0,
+                            borderBottom: "1px solid #e2e2e2",
+                          }}
+                        >
+                          <div
+                            style={{
+                              textAlign: "left",
+                              width: 160,
+                              padding: 5,
+                              paddingBottom: 4,
+                              minWidth: 0,
+                              borderTop: "0 solid transparent",
+                              borderLeft: "0 solid transparent",
+                              fontSize: 12,
+                              fontFamily: "Arial",
+                            }}
+                          >
+                            {a.detalle_egreso}
+                          </div>
+                        </td>
+                        <td
+                          style={{
+                            borderRight: "1px solid #d0cecf",
+                            borderLeft: "1px solid transparent",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            verticalAlign: "middle",
+                            textAlign: "left",
+                            padding: 0,
+                            borderBottom: "1px solid #e2e2e2",
+                          }}
+                        >
+                          <div
+                            style={{
+                              textAlign: "left",
+                              width: 160,
+                              padding: 5,
+                              paddingBottom: 4,
+                              minWidth: 0,
+                              borderTop: "0 solid transparent",
+                              borderLeft: "0 solid transparent",
+                              fontSize: 12,
+                              fontFamily: "Arial",
+                            }}
+                          >
+                            {a.gastos.map((b) => {
+                              return (
+                                <div key={b.nro}>
+                                  <ul style={{ display: "flex" }}>
+                                    <li style={{ listStyle: "none" }}>
+                                      {b.nro}.-{" "}
+                                    </li>
+                                    <li style={{ listStyle: "none" }}>
+                                      {" "}
+                                      {b.gasto} -{" "}
+                                    </li>
+                                    <li style={{ listStyle: "none" }}>
+                                      S/{formatter.format(b.monto)}
+                                    </li>
+                                  </ul>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </DialogContent>
       </div>
       <DialogActions>
