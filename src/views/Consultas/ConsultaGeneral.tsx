@@ -208,7 +208,7 @@ const ConsultaGeneral = () => {
                       borderBottom: "1px solid #000",
                     }}
                   >
-                    Caja Abilio Coronado
+                    {buscar === "" ? "Caja Abilio Coronado" : "Abilio Coronado"}
                   </div>
                   <div style={{ padding: 10 }}>
                     <h3>
@@ -221,28 +221,33 @@ const ConsultaGeneral = () => {
                         )
                       )}
                     </h3>
-                    <h3>
-                      Egresos de Nro Cta Abilio Coronado: S/
-                      {formatter.format(
-                        montoEgresosAbilio?.reduce(
-                          (prev: any, curr: any) => prev + curr,
-                          0
-                        )
-                      )}
-                    </h3>
-                    <h3>
-                      Resumen: S/
-                      {formatter.format(
-                        montoAbiliado?.reduce(
-                          (prev: any, curr: any) => prev + curr,
-                          0
-                        ) -
-                          montoEgresosAbilio?.reduce(
-                            (prev: any, curr: any) => prev + curr,
-                            0
-                          )
-                      )}
-                    </h3>
+                    {buscar === "" && (
+                      <>
+                        <h3>
+                          Egresos de Nro Cta Abilio Coronado: S/
+                          {formatter.format(
+                            montoEgresosAbilio?.reduce(
+                              (prev: any, curr: any) => prev + curr,
+                              0
+                            )
+                          )}
+                        </h3>
+
+                        <h3>
+                          Resumen: S/
+                          {formatter.format(
+                            montoAbiliado?.reduce(
+                              (prev: any, curr: any) => prev + curr,
+                              0
+                            ) -
+                              montoEgresosAbilio?.reduce(
+                                (prev: any, curr: any) => prev + curr,
+                                0
+                              )
+                          )}
+                        </h3>
+                      </>
+                    )}
                   </div>
                 </div>
                 <div style={{ width: "50%" }}>
@@ -255,7 +260,7 @@ const ConsultaGeneral = () => {
                       borderBottom: "1px solid #000",
                     }}
                   >
-                    Caja Olger Perez
+                    {buscar === "" ? "Caja Olger Perez" : "Olger Perez"}
                   </div>
                   <div style={{ padding: 10 }}>
                     <h3>
@@ -268,60 +273,80 @@ const ConsultaGeneral = () => {
                         )
                       )}
                     </h3>
-                    <h3>
-                      Egresos de Nro Cta Olger Pérez: S/
-                      {formatter.format(
-                        montoEgresosOlger?.reduce(
-                          (prev: any, curr: any) => prev + curr,
-                          0
-                        )
-                      )}
-                    </h3>
-                    <h3>
-                      Resumen: S/
-                      {formatter.format(
-                        montoOlger?.reduce(
-                          (prev: any, curr: any) => prev + curr,
-                          0
-                        ) -
-                          montoEgresosOlger?.reduce(
-                            (prev: any, curr: any) => prev + curr,
-                            0
-                          )
-                      )}
-                    </h3>
+                    {buscar === "" && (
+                      <>
+                        <h3>
+                          Egresos de Nro Cta Olger Pérez: S/
+                          {formatter.format(
+                            montoEgresosOlger?.reduce(
+                              (prev: any, curr: any) => prev + curr,
+                              0
+                            )
+                          )}
+                        </h3>
+                        <h3>
+                          Resumen: S/
+                          {formatter.format(
+                            montoOlger?.reduce(
+                              (prev: any, curr: any) => prev + curr,
+                              0
+                            ) -
+                              montoEgresosOlger?.reduce(
+                                (prev: any, curr: any) => prev + curr,
+                                0
+                              )
+                          )}
+                        </h3>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  width: "100%",
-                  fontSize: 12,
-                  textAlign: "center",
-                  justifyContent: "center",
-                  borderRight: "1px solid #000",
-                  borderLeft: "1px solid #000",
-                  borderBottom: "1px solid #000",
-                  padding: 10,
-                }}
-              >
-                <h3>
-                  Dinero disponible: S/{" "}
-                  {formatter.format(
-                    Number(
-                      monto?.reduce((prev: any, curr: any) => prev + curr, 0)
-                    ) -
+              {buscar === "" && (
+                <div
+                  style={{
+                    display: "flex",
+                    width: "100%",
+                    fontSize: 12,
+                    textAlign: "center",
+                    justifyContent: "center",
+                    borderRight: "1px solid #000",
+                    borderLeft: "1px solid #000",
+                    borderBottom: "1px solid #000",
+                    padding: 10,
+                  }}
+                >
+                  <h3>
+                    Dinero disponible: S/{" "}
+                    {formatter.format(
                       Number(
-                        montoEgresos?.reduce(
-                          (prev: any, curr: any) => prev + curr,
-                          0
+                        monto?.reduce((prev: any, curr: any) => prev + curr, 0)
+                      ) -
+                        Number(
+                          montoEgresos?.reduce(
+                            (prev: any, curr: any) => prev + curr,
+                            0
+                          )
                         )
-                      )
-                  )}
-                </h3>
-              </div>
+                    )}
+                  </h3>
+                </div>
+              )}
             </div>
+            {buscar === "" && (
+              <div style={{ marginLeft: 10, marginRight: 10 }}>
+                <label
+                  style={{
+                    color: "red",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                  }}
+                  onClick={showModalEgresos}
+                >
+                  Ver total de egresos
+                </label>
+              </div>
+            )}
             {isLoadingPagos ? (
               isErrorPagos ? (
                 "Ha ocurrido un error al listar la consulta general"
