@@ -318,7 +318,9 @@ const ConsultaEgresoListModal = ({ handleClose, open }: IModal) => {
   //fin table
   const componentRef = useRef(null);
 
-  const reactToPrintContent = () => componentRef.current;
+  const reactToPrintContent = () => {
+    return componentRef.current;
+  };
 
   const handlePrint = useReactToPrint({
     content: reactToPrintContent,
@@ -399,7 +401,7 @@ const ConsultaEgresoListModal = ({ handleClose, open }: IModal) => {
       maxWidth="md"
       fullWidth
     >
-      <div ref={componentRef}>
+      <div>
         <DialogTitle id="alert-dialog-title">Total de egresos</DialogTitle>
         <DialogContent>
           <h3>
@@ -499,6 +501,7 @@ const ConsultaEgresoListModal = ({ handleClose, open }: IModal) => {
                 }}
               >
                 <table
+                  ref={componentRef}
                   {...{
                     style: {
                       width: table.getCenterTotalSize(),

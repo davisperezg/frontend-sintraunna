@@ -190,93 +190,137 @@ const ConsultaGeneral = () => {
           )}
 
           <div ref={componentRef}>
-            <div style={{ paddingLeft: 10, fontSize: 12 }}>
-              <h3>
-                Afiliados depositaron a Abilio Coronado:
-                {" S/"}
-                {formatter.format(
-                  montoAbiliado?.reduce(
-                    (prev: any, curr: any) => prev + curr,
-                    0
-                  )
-                )}
-              </h3>
-              <h3>
-                Afiliados depositaron a Olger Pérez:
-                {" S/"}
-                {formatter.format(
-                  montoOlger?.reduce((prev: any, curr: any) => prev + curr, 0)
-                )}
-              </h3>
-              <h3>-------------------------------------------------</h3>
-              <h3>
-                Importe general de afiliado
-                {buscar === "" ? "s" : (data as any[]).length === 1 ? "" : "s"}:
-                S/
-                {formatter.format(
-                  monto?.reduce((prev: any, curr: any) => prev + curr, 0)
-                )}
-              </h3>
-              {buscar === "" && (
-                <div>
-                  <br />
-                  <br />
-                  <h3>
-                    Total de salida del dinero de Abilio Coronado: S/
-                    {formatter.format(
-                      montoEgresosAbilio?.reduce(
-                        (prev: any, curr: any) => prev + curr,
-                        0
-                      )
-                    )}
-                  </h3>
-                  <h3>
-                    Total de salida del dinero de Olger Pérez: S/
-                    {formatter.format(
-                      montoEgresosOlger?.reduce(
-                        (prev: any, curr: any) => prev + curr,
-                        0
-                      )
-                    )}
-                  </h3>
-                  <h3>-------------------------------------------------</h3>
-                  <h3>
-                    Importe general de salida: S/
-                    {formatter.format(
-                      montoEgresos?.reduce(
-                        (prev: any, curr: any) => prev + curr,
-                        0
-                      )
-                    )}
-                    {" - "}
-                    <label
-                      style={{
-                        color: "red",
-                        textDecoration: "underline",
-                        cursor: "pointer",
-                      }}
-                      onClick={showModalEgresos}
-                    >
-                      Ver egresos
-                    </label>
-                  </h3>
-                  <h3>-------------------------------------------------</h3>
-                  <h3>
-                    Resumen: S/{" "}
-                    {formatter.format(
-                      Number(
-                        monto?.reduce((prev: any, curr: any) => prev + curr, 0)
-                      ) -
-                        Number(
-                          montoEgresos?.reduce(
+            <div style={{ marginLeft: 10, marginRight: 10 }}>
+              <div
+                style={{
+                  fontSize: 12,
+                  display: "flex",
+                  border: "1px solid #000",
+                }}
+              >
+                <div style={{ width: "50%", borderRight: "1px solid #000" }}>
+                  <div
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderBottom: "1px solid #000",
+                    }}
+                  >
+                    Caja Abilio Coronado
+                  </div>
+                  <div style={{ padding: 10 }}>
+                    <h3>
+                      Deposito en Nro Cta - Abilio Coronado:
+                      {" S/"}
+                      {formatter.format(
+                        montoAbiliado?.reduce(
+                          (prev: any, curr: any) => prev + curr,
+                          0
+                        )
+                      )}
+                    </h3>
+                    <h3>
+                      Egresos de Nro Cta Abilio Coronado: S/
+                      {formatter.format(
+                        montoEgresosAbilio?.reduce(
+                          (prev: any, curr: any) => prev + curr,
+                          0
+                        )
+                      )}
+                    </h3>
+                    <h3>
+                      Resumen: S/
+                      {formatter.format(
+                        montoAbiliado?.reduce(
+                          (prev: any, curr: any) => prev + curr,
+                          0
+                        ) -
+                          montoEgresosAbilio?.reduce(
                             (prev: any, curr: any) => prev + curr,
                             0
                           )
-                        )
-                    )}
-                  </h3>
+                      )}
+                    </h3>
+                  </div>
                 </div>
-              )}
+                <div style={{ width: "50%" }}>
+                  <div
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderBottom: "1px solid #000",
+                    }}
+                  >
+                    Caja Olger Perez
+                  </div>
+                  <div style={{ padding: 10 }}>
+                    <h3>
+                      Deposito en Nro Cta - Olger Pérez:
+                      {" S/"}
+                      {formatter.format(
+                        montoOlger?.reduce(
+                          (prev: any, curr: any) => prev + curr,
+                          0
+                        )
+                      )}
+                    </h3>
+                    <h3>
+                      Egresos de Nro Cta Olger Pérez: S/
+                      {formatter.format(
+                        montoEgresosOlger?.reduce(
+                          (prev: any, curr: any) => prev + curr,
+                          0
+                        )
+                      )}
+                    </h3>
+                    <h3>
+                      Resumen: S/
+                      {formatter.format(
+                        montoOlger?.reduce(
+                          (prev: any, curr: any) => prev + curr,
+                          0
+                        ) -
+                          montoEgresosOlger?.reduce(
+                            (prev: any, curr: any) => prev + curr,
+                            0
+                          )
+                      )}
+                    </h3>
+                  </div>
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  fontSize: 12,
+                  textAlign: "center",
+                  justifyContent: "center",
+                  borderRight: "1px solid #000",
+                  borderLeft: "1px solid #000",
+                  borderBottom: "1px solid #000",
+                  padding: 10,
+                }}
+              >
+                <h3>
+                  Dinero disponible: S/{" "}
+                  {formatter.format(
+                    Number(
+                      monto?.reduce((prev: any, curr: any) => prev + curr, 0)
+                    ) -
+                      Number(
+                        montoEgresos?.reduce(
+                          (prev: any, curr: any) => prev + curr,
+                          0
+                        )
+                      )
+                  )}
+                </h3>
+              </div>
             </div>
             {isLoadingPagos ? (
               isErrorPagos ? (
