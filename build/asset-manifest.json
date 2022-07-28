@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.69a48660.css",
-    "main.js": "/static/js/main.344593f4.js",
+    "main.js": "/static/js/main.e65e0338.js",
     "static/js/787.c07afb26.chunk.js": "/static/js/787.c07afb26.chunk.js",
     "static/media/uxwing-iconsfont.svg?v=1.0": "/static/media/uxwing-iconsfont.e8141e3f7e6fda91827a.svg",
     "static/media/uxwing-iconsfont.ttf?v=1.0": "/static/media/uxwing-iconsfont.c18ee444c0d0f8ada436.ttf",
@@ -10,11 +10,11 @@
     "static/media/LogoSintraunnaMod.jpeg": "/static/media/LogoSintraunnaMod.1f4df2346b717c8ea4b3.jpeg",
     "index.html": "/index.html",
     "main.69a48660.css.map": "/static/css/main.69a48660.css.map",
-    "main.344593f4.js.map": "/static/js/main.344593f4.js.map",
+    "main.e65e0338.js.map": "/static/js/main.e65e0338.js.map",
     "787.c07afb26.chunk.js.map": "/static/js/787.c07afb26.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.69a48660.css",
-    "static/js/main.344593f4.js"
+    "static/js/main.e65e0338.js"
   ]
 }
