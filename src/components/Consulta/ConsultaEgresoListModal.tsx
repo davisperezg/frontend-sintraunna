@@ -93,8 +93,8 @@ const columns: ColumnDef<TEgreso>[] | any[] = [
                 1 +
                 ".-" +
                 a.gasto +
-                " - " +
-                a.monto +
+                " - S/" +
+                formatter.format(a.monto) +
                 " - " +
                 a.proviene_dinero}
             </span>
