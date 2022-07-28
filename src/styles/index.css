@@ -19,6 +19,22 @@ code {
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: "uxwing-iconsfont";
+  src: url("../fonts/uxwing-iconsfont.eot?v=1.0");
+  src: url("../fonts/uxwing-iconsfont.eot?v=1.0#iefix")
+      format("embedded-opentype"),
+    url("../fonts/uxwing-iconsfont.ttf?v=1.0") format("truetype"),
+    url("../fonts/uxwing-iconsfont.woff?v=1.0") format("woff"),
+    url("../fonts/uxwing-iconsfont.svg?v=1.0#uxwing-iconsfont") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.test::before {
+  content: "\e919";
+  font-family: "uxwing-iconsfont";
+}
 /* @media print {
   table {
     width: 100%;
