@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/static/css/main.69a48660.css",
-    "main.js": "/static/js/main.ea497fb0.js",
+    "main.css": "/static/css/main.6737447f.css",
+    "main.js": "/static/js/main.0b87f983.js",
     "static/js/787.c07afb26.chunk.js": "/static/js/787.c07afb26.chunk.js",
-    "static/media/uxwing-iconsfont.svg?v=1.0": "/static/media/uxwing-iconsfont.e8141e3f7e6fda91827a.svg",
+    "static/media/uxwing-iconsfont.svg?v=1.0": "/static/media/uxwing-iconsfont.9ff0c0985b5d8095d776.svg",
     "static/media/uxwing-iconsfont.ttf?v=1.0": "/static/media/uxwing-iconsfont.c18ee444c0d0f8ada436.ttf",
     "static/media/uxwing-iconsfont.eot?v=1.0": "/static/media/uxwing-iconsfont.e52c0a6b3451b153a472.eot",
     "static/media/uxwing-iconsfont.woff?v=1.0": "/static/media/uxwing-iconsfont.036e39cb7aceb3c051b6.woff",
     "static/media/LogoSintraunnaMod.jpeg": "/static/media/LogoSintraunnaMod.1f4df2346b717c8ea4b3.jpeg",
     "index.html": "/index.html",
-    "main.69a48660.css.map": "/static/css/main.69a48660.css.map",
-    "main.ea497fb0.js.map": "/static/js/main.ea497fb0.js.map",
+    "main.6737447f.css.map": "/static/css/main.6737447f.css.map",
+    "main.0b87f983.js.map": "/static/js/main.0b87f983.js.map",
     "787.c07afb26.chunk.js.map": "/static/js/787.c07afb26.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.69a48660.css",
-    "static/js/main.ea497fb0.js"
+    "static/css/main.6737447f.css",
+    "static/js/main.0b87f983.js"
   ]
 }
